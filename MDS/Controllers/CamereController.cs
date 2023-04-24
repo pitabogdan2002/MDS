@@ -25,8 +25,24 @@ namespace MDS.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        
+        [Authorize(Roles = "Agent,User,Admin")]
+        public ActionResult Index()
+        {
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.message = TempData["message"].ToString();
+            }
 
+
+            Camera camera = new Camera();
+
+            camera.Hoteluri = GetAllHotels();
+            var camere = from camer in db.ListaCamere
+                             orderby camer.PretNoapte
+                             select camer;
+            ViewBag.Camere = camere;
+            return View(camera);
+        }
 
         [Authorize(Roles = "Agent,User,Admin")]
         public IActionResult Show(int id)
@@ -37,7 +53,7 @@ namespace MDS.Controllers
                                             .Where(art => art.Id == id)
                                             .First();
 
-            
+
 
             return View(camera);
 
@@ -47,29 +63,78 @@ namespace MDS.Controllers
         public IActionResult New()
         {
             Camera camera = new Camera();
-                camera.Hoteluri = GetAllHotels();
+            camera.Hoteluri = GetAllHotels();
 
             return View(camera);
         }
 
 
-        public ActionResult New(Collection bm)
+        [HttpPost]
+        [Authorize(Roles = "User,Admin,Agent")]
+        public ActionResult New(Camera cm)
         {
-            bm.UserId = _userManager.GetUserId(User);
+            //cm.UserId = _userManager.GetUserId(User);
 
-            if (ModelState.IsValid)
+
+            db.ListaCamere.Add(cm);
+            db.SaveChanges();
+            TempData["message"] = "Camera a fost adaugata";
+            // return RedirectToAction("Index");
+            return View(cm);
+
+        }
+
+        [Authorize(Roles = "Agent,Admin")]
+        public IActionResult Edit(int id)
+        {
+
+            Camera camera = db.ListaCamere.Include("Hotel")
+                                        .Where(art => art.Id == id)
+                                        .First();
+
+            camera.Hoteluri = GetAllHotels();
+
+
+            if (camera.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
-                db.Collections.Add(bm);
-                db.SaveChanges();
-                TempData["message"] = "Colectia a fost adaugata";
-                return RedirectToAction("Index");
+                return View(camera);
             }
-
             else
             {
-                return View(bm);
+                TempData["message"] = "Nu puteti edita aceasta camera deoarece nu va apartine";
+                //return RedirectToAction("Index");
+                return View(camera);
             }
+
         }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Agent,Admin")]
+        public ActionResult Delete(int id)
+        {
+            Camera camera = db.ListaCamere.Include("Hotel")
+                                         .Where(art => art.Id == id)
+                                         .First();
+
+            if (camera.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            { 
+                db.ListaCamere.Remove(camera);
+                db.SaveChanges();
+                TempData["message"] = "Camera a fost stearsa";
+                //return RedirectToAction("Index");
+                return View();
+            }
+            else
+            {
+                TempData["message"] = "Nu aveti dreptul sa stergeti acesta camera";
+                //return RedirectToAction("Index");
+                return View();
+            }
+
+        }
+
+
         private void SetAccessRights()
         {
             ViewBag.AfisareButoane = false;
@@ -92,7 +157,7 @@ namespace MDS.Controllers
             var selectList = new List<SelectListItem>();
 
             // extragem toate categoriile din baza de date
-            var hoteluri = from hotel in db.ListaCamere
+            var hoteluri = from hotel in db.ListaHoteluri
                              select hotel;
 
             // iteram prin categorii
@@ -109,6 +174,9 @@ namespace MDS.Controllers
            
             return selectList;
         }
+
+
+        
 
 
     }

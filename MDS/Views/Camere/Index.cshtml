@@ -1,0 +1,43 @@
+﻿@model MDS.Models.Camera
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@if (ViewBag.Message != null)
+{
+    <h2 class="alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
+@foreach (MDS.Models.Camera camera in ViewBag.Camere)
+{
+    <div class="card text-white bg-info">
+
+        @* @Html.Partial("ArticleInfo", article) *@
+
+
+        <div class="card-body">
+
+    <h3 class="card-title alert-success py-3 px-3 rounded-2">@camera.Nume</h3>
+
+    <div class="card-text">@Html.Raw(camera.Descriere)</div>
+
+    <div class="d-flex justify-content-between flex-row mt-5">
+
+    <div><i class="bi bi-globe"></i> @camera.Hotel.Nume</div>
+    <div><i class="bi bi-globe"></i> @camera.Capacitate</div>
+    <div><i class="bi bi-globe"></i> @camera.PretNoapte</div>
+
+    <a class="btn btn-success" href="/Camere/Show/@camera.Id">Afisare camera</a>
+
+   
+
+    </div>
+
+    </div>
+
+    </div>
+
+    <br />
+    <br />
+
+}
