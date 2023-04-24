@@ -8,8 +8,8 @@ namespace MDS.Models
     {
         [Key]
         public int Id { get; set; }
-        
-        public ICollection <String> ListaClienti { get; set; }
+
+        public string ListaClienti { get; set; } 
         [Required(ErrorMessage = "Data de check in este obligatorie")]
         public DateTime CheckIn { get; set; }
 
