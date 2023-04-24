@@ -32,7 +32,7 @@ namespace MDS.Models
         public virtual ICollection<Rezervare> ListaRezervari { get; set; }
 
         [NotMapped]
-        public IEnumerable<SelectListItem> Hotel { get; set; }
+        public IEnumerable<SelectListItem> Hoteluri { get; set; }
 
         [NotMapped]
         public bool Disponibila { get; set; }

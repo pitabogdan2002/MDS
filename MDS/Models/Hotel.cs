@@ -36,7 +36,7 @@ namespace MDS.Models
         public virtual ICollection<Camera>? ListaCamere { get; set; }
 
         [NotMapped]
-        public IEnumerable<SelectListItem>? Tara { get; set; }
+        public IEnumerable<SelectListItem>? Tari { get; set; }
 
     }
 }
