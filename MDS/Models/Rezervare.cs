@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,6 +24,8 @@ namespace MDS.Models
 
         public String ? UserId { get; set; }
         public int? CameraId { get; set;}
+
+        
 
         [NotMapped]
         public IEnumerable<SelectListItem>? Camera { get; set; }
