@@ -30,6 +30,7 @@ namespace MDS.Controllers
 
             _roleManager = roleManager;
         }
+        [Authorize(Roles = "User")]
         public IActionResult Index()
         {
             var rezervari = db.ListaRezervari.OrderByDescending(a => a.CheckIn).ThenByDescending(a => a.CheckOut)
@@ -67,11 +68,14 @@ namespace MDS.Controllers
         }
 
         [Authorize(Roles = "User")]
-        public IActionResult New()
-        {
+            public IActionResult New()
+            {
+                Rezervare rez= new Rezervare();
+                rez.Suma = 0;   
+                
+                return View();
+            }
 
-            return View();
-        }
         [HttpPost]
         [Authorize(Roles = "User")]
         public ActionResult New(Rezervare rez)
@@ -94,55 +98,70 @@ namespace MDS.Controllers
 
 
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Show(int id)
+        public ActionResult Show(int id)
         {
+            var reservation = db.ListaRezervari.Find(id);
+            var camera = db.ListaCamere.SingleOrDefault(c => c.Id == reservation.CameraId);
+
+            ViewBag.Reservation = reservation;
+            ViewBag.Camera = camera;
             SetAccessRights();
+            return View();
+        }
 
-            if (User.IsInRole("User"))
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult Edit(int id)
+        {
+            Rezervare rezervare = db.ListaRezervari.Find(id);
+
+            if (rezervare == null)
             {
-                var rezervari = db.ListaRezervari
-                                  .Include("ListaRezervari")
-                                  .Where(b => b.UserId == _userManager.GetUserId(User))
-                                  .Include("User")
-                                  .Where(b => b.Id == id)
-                                  .FirstOrDefault();
-
-                if (rezervari == null)
-                {
-                    TempData["message"] = "Nu exista rezervari facute";
-                    return RedirectToAction("Index", "Hoteluri");
-                }
-
-                return View(rezervari);
+                return NotFound();
             }
 
-            else
-            if (User.IsInRole("Admin"))
+            if (rezervare.UserId != _userManager.GetUserId(User) && !User.IsInRole("Admin"))
             {
-                var rezevari = db.ListaRezervari
-                                  .Include("ListaCamere")
-                                  .Where(b => b.UserId == _userManager.GetUserId(User))
-                                  .Include("User")
-                                  .Where(b => b.Id == id)
-                                  .FirstOrDefault();
-
-
-                if (rezevari == null)
-                {
-                    TempData["message"] = "Nu exista rezervari";
-                    return RedirectToAction("Index", "Hoteluri");
-                }
-
-
-                return View(rezevari);
+                TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unei rezervari care nu va apartine";
+                return RedirectToAction("Index");
             }
 
+            return View(rezervare);
+        }
+
+      
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult Edit(int id, Rezervare rez)
+        {
+            // Se cauta rezervarea in baza de date dupa ID
+            Rezervare reservationToEdit = db.ListaRezervari.Find(id);
+
+            // Se verifica daca utilizatorul este proprietarul rezervarii sau admin-ul
+            if (reservationToEdit.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                // Daca utilizatorul este proprietarul sau admin-ul, se actualizeaza rezervarea cu noile date din formular
+                reservationToEdit.CheckIn = rez.CheckIn;
+                reservationToEdit.CheckOut = rez.CheckOut;
+                reservationToEdit.ListaClienti = rez.ListaClienti;
+
+                // Se salveaza modificarile in baza de date
+                db.SaveChanges();
+
+                // Se afiseaza un mesaj de confirmare si se redirectioneaza catre pagina principala
+                TempData["message"] = "Rezervarea a fost modificata cu succes";
+                return RedirectToAction("Index");
+            }
             else
             {
-                TempData["message"] = "Nu aveti drepturi";
-                return RedirectToAction("Index", "Posts");
+                // Daca utilizatorul nu are dreptul sa modifice rezervarea, se redirectioneaza catre pagina principala cu un mesaj de eroare
+                TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unei rezervari care nu va apartine";
+                return RedirectToAction("Index");
             }
         }
+
+
+
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -153,49 +172,7 @@ namespace MDS.Controllers
             return RedirectToAction("Index");
         }
 
-        [NonAction]
-        public IEnumerable<SelectListItem> GetAllRezervari()
-        {
-
-            var selectList = new List<SelectListItem>();
-            var rezerivari = from rez in db.ListaRezervari
-                      select rez;
-            foreach (var rezervare in rezerivari)
-            {
-                 
-                selectList.Add(new SelectListItem
-                {
-                    Value =rezervare.Id.ToString()
-                     
-                });
-            }
-            return selectList;
-        }
-
-        [Authorize(Roles = "User")]
-        public IActionResult Edit(int id)
-        {
-
-            Rezervare rezervare = db.ListaRezervari
-                            .Where(b => b.Id == id)
-                                  .First();
-
-
-            rezervare = (Rezervare)GetAllRezervari();
-
-            if (rezervare.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
-            {
-                return View(rezervare);
-            }
-
-            else
-            {
-                TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unei rezervari care nu va apartine";
-                return RedirectToAction("Index");
-            }
-
-        }
-
+ 
         private void SetAccessRights()
         {
             ViewBag.AfisareButoane = false;
