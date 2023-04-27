@@ -1,5 +1,17 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model MDS.Models.Tara
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3>@Model.Nume</h3>
+    </div>
+    <div class="card-body">
+        <h4>Lista Hoteluri</h4>
+        <hr />
+        <ul>
+            @foreach (var hotel in Model.ListaHoteluri)
+            {
+                <li>@hotel.Nume</li>
+            }
+        </ul>
+    </div>
+</div>
