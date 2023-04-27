@@ -15,6 +15,21 @@
     <div><i class="bi bi-globe"></i> @Model.Hotel.Nume</div>
 
     </div>
+    <div>
+
+                    <a class="btn btn-outline-primary" href="/Camere/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+
+                </div>
+
+                <div>
+
+                    <form method="post" action="/Camere/Delete/@Model.Id">
+
+                        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+
+                    </form>
+
+                </div>
 
     </div>
 </div>

@@ -1,4 +1,5 @@
-﻿using MDS.Data;
+﻿using Ganss.Xss;
+using MDS.Data;
 using MDS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -59,7 +60,7 @@ namespace MDS.Controllers
 
         }
 
-        [Authorize(Roles = "User,Admin,Agent")]
+        [Authorize(Roles = "Admin,Agent")]
         public IActionResult New()
         {
             Camera camera = new Camera();
@@ -70,17 +71,27 @@ namespace MDS.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "User,Admin,Agent")]
+        [Authorize(Roles = "Admin,Agent")]
         public ActionResult New(Camera cm)
         {
-            //cm.UserId = _userManager.GetUserId(User);
+            var sanitizer = new HtmlSanitizer();
+            cm.Hoteluri = GetAllHotels();
+            cm.Descriere = sanitizer.Sanitize(cm.Descriere);
+            cm.UserId = _userManager.GetUserId(User);
 
+         
+            try
+            {
+                db.ListaCamere.Add(cm);
+                db.SaveChanges();
+                TempData["message"] = "Camera a fost adaugata";
+                return Redirect("/Hoteluri/Show/"+cm.Hotel.Id);
+            }
 
-            db.ListaCamere.Add(cm);
-            db.SaveChanges();
-            TempData["message"] = "Camera a fost adaugata";
-            // return RedirectToAction("Index");
-            return View(cm);
+            catch (Exception)
+            {
+                return View(cm);
+            }
 
         }
 
@@ -111,6 +122,32 @@ namespace MDS.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Agent,Admin")]
+        public IActionResult Edit(int id, Camera requestCamera)
+        {
+            Camera cam = db.ListaCamere.Find(id);
+            try
+            {
+
+                cam.Nume = requestCamera.Nume;
+                cam.PretNoapte = requestCamera.PretNoapte;
+                cam.Capacitate= requestCamera.Capacitate;
+                cam.Descriere = requestCamera.Descriere;
+                db.SaveChanges();
+                TempData["message"] = "Camera a fost modificata!";
+                return RedirectToAction("Show", "Camere", new { id = id });
+            }
+            catch (Exception e)
+            {
+                return View(requestCamera);
+            }
+        }
+
+
+
+
+
+        [HttpPost]
+        [Authorize(Roles = "Agent,Admin")]
         public ActionResult Delete(int id)
         {
             Camera camera = db.ListaCamere.Include("Hotel")
@@ -122,14 +159,14 @@ namespace MDS.Controllers
                 db.ListaCamere.Remove(camera);
                 db.SaveChanges();
                 TempData["message"] = "Camera a fost stearsa";
-                //return RedirectToAction("Index");
-                return View();
+                return RedirectToAction("Show","Hoteluri", new {id = camera.Hotel.Id});
+                //return View();
             }
             else
             {
                 TempData["message"] = "Nu aveti dreptul sa stergeti acesta camera";
-                //return RedirectToAction("Index");
-                return View();
+                return RedirectToAction("Show", "Hoteluri", new { id = camera.Hotel.Id });
+                //return View();
             }
 
         }
