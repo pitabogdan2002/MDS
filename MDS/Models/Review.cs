@@ -13,7 +13,7 @@ namespace MDS.Models
 
         [Required(ErrorMessage = "Continutul review-ului  este obligatoriu")]
         public string Continut { get; set; }
-        public int? Rating { get; set; }
+        public virtual int? Rating { get; set; }
 
         public int? HotelId { get; set; }
         public string? UserId { get; set; }
