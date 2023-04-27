@@ -44,8 +44,8 @@ namespace MDS.Controllers
 
             if (User.IsInRole("User"))
             {   
-                var tari = from tara in db.ListaTari
-                           select tara;
+                    var tari = from tara in db.ListaTari
+                               select tara;
 
                 ViewBag.Tari = tari;
 

@@ -1,34 +1,31 @@
 ﻿@model MDS.Models.Review
 
-<h1>Edit Review</h1>
 
-@using (Html.BeginForm("Edit", "Reviews", new { id = Model.Id }, FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Titlu, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.Titlu, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Titlu, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Continut, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.Continut, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Continut, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Rating, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.Rating, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Rating, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
-    </div>
+@{
+    ViewBag.Title = "Edit";
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+<h2>Editare review</h2>
+<br />
+
+
+@using (Html.BeginForm(controllerName: "Reviews", actionName: "Edit",
+      method: FormMethod.Post, routeValues: new { id = Model.Id }))
+
+{
+    @Html.Label("Continut", "Continut comentariu")
+
+    <br />
+
+    @Html.Editor("Continut", new { @class = "form-control" })
+    <br />
+
+
+    @Html.ValidationMessage("Continut", null, new { @class = "text-danger" })
+
+
+
+    <button class="btn  btn-primary" type="submit">Editeaza review</button>
+
+}
+

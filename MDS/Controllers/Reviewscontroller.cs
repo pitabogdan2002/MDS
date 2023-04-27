@@ -63,7 +63,7 @@ namespace MDS.Controllers
             else
             {
                 TempData["message"] = "Nu aveti dreptul sa stergeti review-ul";
-                return RedirectToAction("Index", "Hoteluri");
+                return RedirectToAction("Index", "Tari");
             }
         }
 
@@ -80,7 +80,7 @@ namespace MDS.Controllers
             else
             {
                 TempData["message"] = "Nu aveti dreptul sa editati review-ul";
-                return RedirectToAction("Index", "Hoteluri");
+                return RedirectToAction("Index", "Tari");
             }
         }
 
@@ -93,7 +93,9 @@ namespace MDS.Controllers
             if (rev.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
                 if (ModelState.IsValid)
-                {
+                {   
+                     
+                    rev.Continut = requestReview.Continut;
 
                     db.SaveChanges();
 
@@ -107,7 +109,7 @@ namespace MDS.Controllers
             else
             {
                 TempData["message"] = "Nu aveti dreptul sa faceti modificari";
-                return RedirectToAction("Index", "Hoteluri");
+                return RedirectToAction("Index", "Tari");
             }
         }
     }

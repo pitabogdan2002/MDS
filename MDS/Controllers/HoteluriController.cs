@@ -1,10 +1,12 @@
-﻿using MDS.Data;
+﻿using Ganss.Xss;
+using MDS.Data;
 using MDS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace MDS.Controllers
 {
@@ -73,6 +75,7 @@ namespace MDS.Controllers
                 var ratingCount = ratings.Count();
                 ViewBag.RatingCount = ratingCount;
                 hotel.Rating = ratingSum / ratingCount;
+
                 ViewBag.RatingAvg = ratingSum / ratingCount;
             }
             else
@@ -80,6 +83,7 @@ namespace MDS.Controllers
                 hotel.Rating = 0;///???????
                 ViewBag.RatingSum = 0;
                 ViewBag.RatingCount = 0;
+                ViewBag.RatingAvg = 0;
             }
             db.SaveChanges();
 
@@ -87,7 +91,42 @@ namespace MDS.Controllers
 
             return View(hotel);
         }
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult Show([FromForm] Review rev)
+        {
+             
+            rev.UserId = _userManager.GetUserId(User);
 
+
+            if (ModelState.IsValid)
+            {
+                db.ListaReviews.Add(rev);
+                db.SaveChanges();
+                return Redirect("/Hoteluri/Show/" + rev.HotelId);
+            }
+
+            else
+            {
+                Hotel h = db.ListaHoteluri.Include("Tara")
+                                         .Include("User")
+                                         .Include("ListaReviews")
+                                         .Include("ListaReviews.User")
+                                         .Where(art => art.Id == rev.HotelId)
+                                         .First();
+
+                //return Redirect("/Articles/Show/" + comm.ArticleId);
+
+                // Adaugam bookmark-urile utilizatorului pentru dropdown
+                ViewBag.UserCollections = db.ListaTari
+                                          .Where(b => b.UserId == _userManager.GetUserId(User))
+                                          .ToList();
+
+                SetAccessRights();
+
+                return View(h);
+            }
+        }
 
         [Authorize(Roles = "Agent,Admin")]
         public IActionResult New()
@@ -131,6 +170,43 @@ namespace MDS.Controllers
                 TempData["message"] = "Nu puteti edita acest hotel";
                 //return RedirectToAction("Index");
                 return View(hotel);
+            }
+        }
+        public IActionResult Edit(int id, Hotel requestArticle)
+        {
+            var sanitizer = new HtmlSanitizer();
+
+            Hotel h = db.ListaHoteluri.Find(id);
+
+
+            if (ModelState.IsValid)
+            {
+                if (h.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+                {
+                    h.Nume = requestArticle.Nume;
+
+                    requestArticle.Facilitati = sanitizer.Sanitize(requestArticle.Facilitati);
+
+                    h.Facilitati = requestArticle.Facilitati;
+                     
+
+                    h.TaraId = requestArticle.TaraId;
+                    TempData["message"] = "Hotelul a fost modificat";
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "Tari");
+
+                }
+                else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui hotel care nu va apartine";
+                    return RedirectToAction("Index", "Tari");
+
+                }
+            }
+            else
+            {
+                requestArticle.Tari = GetAllTari();
+                return View(requestArticle);
             }
         }
 
@@ -184,7 +260,7 @@ namespace MDS.Controllers
             ViewBag.AfisareButoane = false;
 
             ViewBag.EsteAdmin = User.IsInRole("Admin");
-            ViewBag.EsteAdmin = User.IsInRole("Agent");
+            ViewBag.EsteAgent = User.IsInRole("Agent");
             ViewBag.UserCurent = _userManager.GetUserId(User);
         }
 

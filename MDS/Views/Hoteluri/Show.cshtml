@@ -8,8 +8,9 @@
         <h3 class="card-title alert-success py-3 px-3 rounded-2">@Model.Nume</h3>
 
         <div>
-
-
+            <p>@ViewBag.RatingAvg</p>
+            <p>@ViewBag.RatingSum</p>
+            <div>
             @for (var i = 1; i <= @ViewBag.RatingAvg; i++)
             {
             <span class="starGlowN"></span>
@@ -17,7 +18,8 @@
             @for (var i = (@ViewBag.RatingAvg + 1); i <= 5; i++)
             {
             <span class="starFadeN"></span>
-            }
+                }
+            </div>
         </div>
 
         <div class="card-text">@Model.Facilitati</div>
@@ -30,19 +32,19 @@
 
     </div>
 
-    @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+    @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteAgent)
     {
-    <div class="d-flex flex-row justify-content-between p-3 border-1 border-top">
+        <div class="d-flex flex-row justify-content-between p-3 border-1 border-top">
 
-        <a class="btn btn-success" href="/Posts/Edit/@Model.Id">Editeaza Hotel</a>
+            <a class="btn btn-success" href="/Hoteluri/Edit/@Model.Id">Editeaza Hotel</a>
 
-        <form method="post" action="/Posts/Delete/@Model.Id">
+            <form method="hotel" action="/Hoteluri/Delete/@Model.Id">
 
-            <button class="btn btn-danger" type="submit">Sterge Hotel</button>
+                <button class="btn btn-danger" type="submit">Sterge Hotel</button>
 
-        </form>
+            </form>
 
-    </div>
+        </div>
     }
 </div>
 

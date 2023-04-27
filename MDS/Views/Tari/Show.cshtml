@@ -11,6 +11,8 @@
             @foreach (var hotel in Model.ListaHoteluri)
             {
                 <li>@hotel.Nume</li>
+                <a href="/Hoteluri/Show/@hotel.Id" class="btn btn-primary">Detalii</a>
+
             }
         </ul>
     </div>
