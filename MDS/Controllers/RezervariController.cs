@@ -1,4 +1,5 @@
-﻿using MDS.Data;
+﻿using Ganss.Xss;
+using MDS.Data;
 using MDS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,8 @@ namespace MDS.Controllers
 
     public class RezervariController : Controller
     {
+        private int cameratrimisa = 0;
+
         private readonly ApplicationDbContext db;
 
         private readonly UserManager<ApplicationUser> _userManager;
@@ -68,30 +71,52 @@ namespace MDS.Controllers
         }
 
         [Authorize(Roles = "User")]
-            public IActionResult New()
-            {
-                Rezervare rez= new Rezervare();
-                rez.Suma = 0;   
-                
-                return View();
-            }
+
+        public IActionResult New(int id)
+        {
+            cameratrimisa = id;
+            ViewBag.x = cameratrimisa;
+            Rezervare rez = new Rezervare();
+            rez.Suma = 0;
+            rez.CameraId = id;
+
+            return View(rez);
+        }
 
         [HttpPost]
         [Authorize(Roles = "User")]
         public ActionResult New(Rezervare rez)
         {
+            var sanitizer = new HtmlSanitizer();
+
             rez.UserId = _userManager.GetUserId(User);
 
+            var camera = db.ListaCamere.SingleOrDefault(c => c.Id == cameratrimisa);
+            if (camera == null || camera.Disponibila == false)
+            {
+                return RedirectToAction("Show/" + cameratrimisa, "Camere");
+            }
             if (ModelState.IsValid)
             {
+                rez.CheckIn = rez.CheckIn;
+                rez.CheckOut = rez.CheckOut;
+                rez.ListaClienti = rez.ListaClienti;
+                camera.Disponibila = true;
+
+                TimeSpan zile = rez.CheckOut - rez.CheckIn;
+                int nrzile = (int)zile.TotalDays;
+                if (nrzile == 0)
+                    nrzile = 1;
+                rez.Suma = nrzile * camera.PretNoapte;
+
                 db.ListaRezervari.Add(rez);
                 db.SaveChanges();
                 TempData["message"] = "Rezervare facuta cu succes !";
                 return RedirectToAction("Index");
             }
-
             else
             {
+                rez.Suma = 0;
                 return View(rez);
             }
         }
@@ -108,7 +133,7 @@ namespace MDS.Controllers
             SetAccessRights();
             return View();
         }
-
+    
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {

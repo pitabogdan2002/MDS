@@ -11,7 +11,18 @@
     </div>
 }
 
-<section id="tari" class="row row-cols-1 row-cols-md-2 g-4">
+<br />
+
+@* Motorul de cautare *@
+<form method="GET">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Cauta o tara" name="search"
+               value="@ViewBag.SearchString">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </div>
+</form>
+
+<section id="pinBoot" class="row row-cols-1 row-cols-md-2 g-4">
     @foreach (var tara in ViewBag.Tari)
     {
         <article class="col">
@@ -73,6 +84,5 @@
     .card-footer {
         display: flex;
         justify-content: center;
-
     }
 </style>

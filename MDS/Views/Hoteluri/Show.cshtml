@@ -1,54 +1,38 @@
 ﻿@model MDS.Models.Hotel
-
 <div class="card">
-
-
     <div class="card-body">
-
         <h3 class="card-title alert-success py-3 px-3 rounded-2">@Model.Nume</h3>
-
         <div>
-            <p>@ViewBag.RatingAvg</p>
-            <p>@ViewBag.RatingSum</p>
+             
             <div>
-            @for (var i = 1; i <= @ViewBag.RatingAvg; i++)
-            {
-            <span class="starGlowN"></span>
-            }
-            @for (var i = (@ViewBag.RatingAvg + 1); i <= 5; i++)
-            {
-            <span class="starFadeN"></span>
+                @for (var i = 1; i <= @ViewBag.RatingAvg; i++)
+                {
+                    <span class="starGlowN"></span>
+                }
+                @for (var i = (@ViewBag.RatingAvg + 1); i <= 5; i++)
+                {
+                    <span class="starFadeN"></span>
                 }
             </div>
         </div>
-
+        <div class="card-text font-weight-bold">Facilitati:</div>
         <div class="card-text">@Model.Facilitati</div>
+        <div class="card-text font-weight-bold">Locatie:</div>
         <div class="card-text">@Model.Locatie</div>
         <div class="d-flex justify-content-between flex-row mt-5">
-
             <div><i class="bi bi-globe"></i> @Model.Tara.Nume</div>
-
         </div>
-
     </div>
-
     @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteAgent)
     {
         <div class="d-flex flex-row justify-content-between p-3 border-1 border-top">
-
             <a class="btn btn-success" href="/Hoteluri/Edit/@Model.Id">Editeaza Hotel</a>
-
             <form method="post" action="/Hoteluri/Delete/@Model.Id">
-
                 <button class="btn btn-danger" type="submit">Sterge Hotel</button>
-
             </form>
-
         </div>
     }
 </div>
-
-
 
 <br />
 <br />
@@ -57,54 +41,34 @@
 
 @foreach (var camera in Model.ListaCamere)
 {
-<div class="container">
-    <div class="row">
-        <div class="col-md-2"></div>
+<div class="container mb-5">
+<div class="row">
+<div class="col-md-2"></div>
 
-        <div class="col-md-8">
+            <div class="col-md-8 bg-light rounded-lg p-4">
 
-            <div>
+                <h4 class="text-uppercase mb-3">@camera.Nume</h4>
+                <a class="btn btn-outline-primary mb-3" href="/Camere/Show/@camera.Id"><i class="bi bi-eye"></i> Vizualizeaza camera</a>
 
-                <p>@camera.Nume</p>
-                <a class="btn btn-outline-primary" href="/Camere/Show/@camera.Id"><i class="bi bi-pencil-square"></i>Vizualizeaza camera</a>
-
-            </div>
-            <br>
-
-
-            @if (camera.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
-                    {
-
-            <div class="d-flex">
-
-                <div>
-
-                    <a class="btn btn-outline-primary" href="/Camere/Edit/@camera.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
-
-                </div>
-
-                <div>
-
-                    <form method="post" action="/Camere/Delete/@camera.Id">
-
-                        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
-
-                    </form>
-
-                </div>
+                @if (camera.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+                {
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a class="btn btn-outline-primary" href="/Camere/Edit/@camera.Id"><i class="bi bi-pencil-square"></i> Editeaza</a>
+                        </div>
+                        <div>
+                            <form method="post" action="/Camere/Delete/@camera.Id">
+                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i> Sterge</button>
+                            </form>
+                        </div>
+                    </div>
+                }
 
             </div>
-                    }
 
-            <br />
-
+            <div class="col-md-2"></div>
         </div>
-
-        <div class="col-md-2"></div>
-
     </div>
-
-</div>
 }
 
 @if (ViewBag.EsteAdmin)
@@ -131,137 +95,100 @@
 
 @foreach (var review in Model.ListaReviews)
 {
-<div class="container">
-    <div class="row">
-        <div class="col-md-2"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
 
-        <div class="col-md-8">
-
-            <div>
-
-                <p>@review.Titlu</p>
-                <small>@review.Continut</small>
-                <strong><i class="bi bi-person"></i>@review.User.Nume @review.User.Prenume</strong>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">@review.Titlu</h4>
+                        <p class="card-text">@review.Continut</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong><i class="bi bi-person"></i>@review.User.Nume @review.User.Prenume</strong>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                @for (var i = 1; i <= review.Rating; i++)
+                                {
+                                    <span class="starGlowN"></span>
+                                }
+                                @for (var i = (review.Rating + 1); i <= 5; i++)
+                                {
+                                    <span class="starFadeN"></span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @if (review.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+                    {
+                        <div class="card-footer d-flex justify-content-between">
+                            <a class="btn btn-outline-primary" href="/Reviews/Edit/@review.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                            <form method="post" action="/Reviews/Delete/@review.Id">
+                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+                            </form>
+                        </div>
+                    }
+                </div>
                 <br />
-                @for (var i = 1; i <= review.Rating; i++)
-                        {
-                <span class="starGlowN"></span>
-                        }
-                @for (var i = (review.Rating + 1); i <= 5; i++)
-                    {
-                <span class="starFadeN"></span>
-                    }
-
             </div>
-            <br>
 
-
-            @if (review.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
-                    {
-
-            <div class="d-flex">
-
-                <div>
-
-                    <a class="btn btn-outline-primary" href="/Reviews/Edit/@review.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
-
-                </div>
-
-                <div>
-
-                    <form method="post" action="/Reviews/Delete/@review.Id">
-
-                        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
-
-                    </form>
-
-                </div>
-
-            </div>
-                    }
-
-            <br />
+            <div class="col-md-2"></div>
 
         </div>
 
-        <div class="col-md-2"></div>
-
     </div>
-
-</div>
 }
 
 
 <div class="container">
-
     <div class="row">
-
         <div class="col-md-2"></div>
-
         <div class="col-md-8">
-
             <div class="card">
-
                 <form method="post" action="/Hoteluri/Show/@Model.Id">
-
                     <div class="card-body">
-
                         <input type="hidden" name="HotelId" value="@Model.Id" />
 
-                        <label>Titlu review</label>
-                        <br />
-                        <textarea class="form-control" name="Titlu"></textarea>
-
-                        @Html.ValidationMessage("Titlu", null, new { @class = "text-danger"})
-
-
-                        <label>Continut</label>
-                        <br />
-                        <textarea class="form-control" name="Continut"></textarea>
-
-                        @Html.ValidationMessage("Continut", null, new { @class = "text-danger"})
-
-
-                        @*RATING*@
-
-                        <div class="form-horizontal">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">
-                                    Rating-ul dumneavoastra: <span style="font-weight:normal;">(1 stea - nu sunt deloc multumit, 5 stele - sunt foarte multumit)</span>
-                                </label>
-                                <div class="col-md-7">
-                                    <div onmouseout="CRateSelected()">
-                                        <span class="starFade" id="Rate1" onclick="CRate(1)" onmouseover="CRateOver(1)" onmouseout="CRateOut(1)"></span><span class="starFade" id="Rate2" onclick="CRate(2)" onmouseover="CRateOver(2)" onmouseout="CRateOut(2)"></span><span class="starFade" id="Rate3" onclick="CRate(3)" onmouseover="CRateOver(3)" onmouseout="CRateOut(3)"></span><span class="starFade" id="Rate4" onclick="CRate(4)" onmouseover="CRateOver(4)" onmouseout="CRateOut(4)"></span><span class="starFade" id="Rate5" onclick="CRate(5)" onmouseover="CRateOver(5)" onmouseout="CRateOut(5)"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="col-md-12">
-                                <input type="hidden" name="HotelId" value="@ViewBag.HotelId" />
-                                <input type="hidden" name="Rating" id="Rating" value="0" />
-
-                            </div>
-                            @Html.ValidationMessage("Rating", null, new { @class = "text-danger"})
-                            <br />
-
-
-
-                            <button class="btn btn-success " type="submit">Adauga review-ul</button>
-
+                        <div class="form-group">
+                            <label for="titlu">Titlu review</label>
+                            <textarea class="form-control" id="titlu" name="Titlu"></textarea>
+                            @Html.ValidationMessage("Titlu", null, new { @class = "text-danger"})
                         </div>
 
-</form>
+                        <div class="form-group">
+                            <label for="continut">Continut</label>
+                            <textarea class="form-control" id="continut" name="Continut"></textarea>
+                            @Html.ValidationMessage("Continut", null, new { @class = "text-danger"})
+                        </div>
 
+                        <div class="form-group">
+                            <label for="rating">
+                                Rating-ul dumneavoastra: <span style="font-weight:normal;">(1 stea - nu sunt deloc multumit, 5 stele - sunt foarte multumit)</span>
+                            </label>
+                            <div onmouseout="CRateSelected()">
+                                <span class="starFade" id="Rate1" onclick="CRate(1)" onmouseover="CRateOver(1)" onmouseout="CRateOut(1)"></span>
+                                <span class="starFade" id="Rate2" onclick="CRate(2)" onmouseover="CRateOver(2)" onmouseout="CRateOut(2)"></span>
+                                <span class="starFade" id="Rate3" onclick="CRate(3)" onmouseover="CRateOver(3)" onmouseout="CRateOut(3)"></span>
+                                <span class="starFade" id="Rate4" onclick="CRate(4)" onmouseover="CRateOver(4)" onmouseout="CRateOut(4)"></span>
+                                <span class="starFade" id="Rate5" onclick="CRate(5)" onmouseover="CRateOver(5)" onmouseout="CRateOut(5)"></span>
+                            </div>
+                            <input type="hidden" name="Rating" id="Rating" value="0" />
+                            @Html.ValidationMessage("Rating", null, new { @class = "text-danger"})
+                        </div>
+
+                        <input type="hidden" name="HotelId" value="@ViewBag.HotelId" />
+
+                        <div class="form-group">
+                            <button class="btn btn-success " type="submit">Adauga review-ul</button>
+                        </div>
+
+                    </div>
+                </form>
             </div>
-
         </div>
-
-        <div class="col-md-2"></div>`
-
+        <div class="col-md-2"></div>
     </div>
-
 </div>
 
 

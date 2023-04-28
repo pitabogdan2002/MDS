@@ -1,48 +1,30 @@
 ﻿@model MDS.Models.Hotel
 
 @{
-    ViewBag.Title = "Index";
+ViewBag.Title = "Index";
 }
 
 @if (ViewBag.Message != null)
 {
-    <h2 class="alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+<h2 class="alert alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
+<section id="pinBoot">
 @foreach (MDS.Models.Hotel hotel in ViewBag.Hoteluri)
-{
-    <div class="card text-white bg-info">
+{   
+            <article class="white-panel" onclick="location.href='/Hoteluri/Show/@hotel.Id'">
+            <h3 class="card-title text-success py-3 px-3 rounded-2">@hotel.Nume</h3>
+            <div><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
+            <div><i class="bi bi-geo-alt-fill"></i> @hotel.Locatie</div>
+            @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
+            {
+                <span class="starGlow"></span>
+            }
+            @for (var i = (int.Parse(@Html.Raw(hotel.Rating).ToString()) + 1); i <= 5; i++)
+            {
+                <span class="starFade"></span>
+            }
+ 
 
-
-        <div class="card-body">
-
-            <h3 class="card-title alert-success py-3 px-3 rounded-2">@hotel.Nume</h3>
-
-
-            <div class="d-flex justify-content-between flex-row mt-5">
-
-                <div><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
-                <div><i class="bi bi-globe"></i> @hotel.Locatie</div>
-
-
-
-                <a class="btn btn-success" href="/Hoteluri/Show/@hotel.Id">Afisare hotel</a>
-
-                @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
-                {
-                    <span class="starGlowN"></span>
-                }
-                @for (var i = (int.Parse(@Html.Raw(hotel.Rating).ToString()) + 1); i <= 5; i++)
-                {
-                    <span class="starFadeN"></span>
-                }
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <br />
-    <br />
-
-}
+        </article>
+    }
+</section>

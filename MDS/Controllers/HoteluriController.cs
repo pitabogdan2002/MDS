@@ -225,6 +225,12 @@ namespace MDS.Controllers
 
             if (hotel.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
+                var c = db.ListaCamere.Where(c => c.Hotel == hotel).First();
+                var r = db.ListaReviews.Where(r => r.HotelId == hotel.Id).ToList();
+                var rezervari = db.ListaRezervari.Where(r => r.CameraId == c.Id).ToList();
+                db.ListaRezervari.RemoveRange(rezervari);
+                db.ListaReviews.RemoveRange(r);
+                // Delete the hotel record
                 db.ListaHoteluri.Remove(hotel);
                 db.SaveChanges();
                 TempData["message"] = "Hotelul a fost sters";

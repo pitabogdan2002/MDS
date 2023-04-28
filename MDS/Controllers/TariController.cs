@@ -35,39 +35,52 @@ namespace MDS.Controllers
 
         public IActionResult Index()
         {
+
+ 
+            var search = "";
+
+            var tari = db.ListaTari.OrderBy(a => a.Nume).ToList();
+
+            if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+            {
+                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
+                List<int> tariid = db.ListaTari.Where(t => t.Nume.Contains(search))
+                    .Select(a => a.Id).ToList();
+                tari = db.ListaTari.Where(t => tariid.Contains(t.Id)).ToList();
+
+            }
+            ViewBag.SearchString = search;
+            int _perPage = 8;
             if (TempData.ContainsKey("message"))
             {
-                ViewBag.Message = TempData["message"];
+                ViewBag.message = TempData["message"].ToString();
             }
+            int totalItems = tari.Count();
+            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+            var offset = 0;
+            if (!currentPage.Equals(0))
+            {
+                offset = (currentPage - 1) * _perPage;
+            }
+            var paginatedArticles = tari.Skip(offset).Take(_perPage);
+            ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
+            ViewBag.Tari = paginatedArticles;
+            if (search != "")
+            {
+                if (totalItems == 0)
+                {
+                    TempData["message"] = "Nu s-a gasit tara care contine cuvantul :" + search;
+                    return RedirectToAction("Index");
+                }
 
-            SetAccessRights();
-
-            if (User.IsInRole("User"))
-            {   
-                    var tari = from tara in db.ListaTari
-                               select tara;
-
-                ViewBag.Tari = tari;
-
-                return View();
+                ViewBag.PaginationBaseUrl = "/Tari/Index/?search=" + search + "&page";
             }
             else
-            if (User.IsInRole("Admin"))
             {
-                var tari = from tara in db.ListaTari
-                           select tara;
-
-                ViewBag.Tari = tari;
-
-                return View();
+                ViewBag.PaginationBaseUrl = "/Tari/Index/?page";
             }
 
-            else
-            {
-                TempData["message"] = "Nu aveti drepturi";
-                return RedirectToAction("Index", "Hoteluri");
-            }
-
+            return View();
         }
 
 

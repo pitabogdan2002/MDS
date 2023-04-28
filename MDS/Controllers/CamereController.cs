@@ -55,7 +55,7 @@ namespace MDS.Controllers
                                             .First();
 
 
-
+            ViewBag.camera = camera;
             return View(camera);
 
         }
