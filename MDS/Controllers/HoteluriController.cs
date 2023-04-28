@@ -38,7 +38,7 @@ namespace MDS.Controllers
 
         public ActionResult Index()
         {
-            if (TempData.ContainsKey("message"))
+               if (TempData.ContainsKey("message"))
             {
                 ViewBag.message = TempData["message"].ToString();
             }
@@ -50,7 +50,7 @@ namespace MDS.Controllers
                            orderby hot.Rating
                            select hot;
             ViewBag.Hoteluri = hoteluri;
-            return View(hoteluri);
+            return View(hotel);
         }
 
 
@@ -143,16 +143,18 @@ namespace MDS.Controllers
         public ActionResult New(Hotel bm)
         {
             bm.Rating = 0;
+            bm.Tari = GetAllTari();
+            bm.UserId = _userManager.GetUserId(User);
             db.ListaHoteluri.Add(bm);
             db.SaveChanges();
+           
 
             TempData["message"] = "Hotelul a fost adaugat";
-            //return RedirectToAction("Index");
-            return View(bm);
+            return RedirectToAction("Show", "Hoteluri", new { id = bm.Id });
 
         }
 
-        [HttpPost]
+ 
         [Authorize(Roles = "Agent,Admin")]
         public ActionResult Edit(int id)
         {
@@ -172,6 +174,8 @@ namespace MDS.Controllers
                 return View(hotel);
             }
         }
+        [HttpPost]
+        [Authorize(Roles = "Agent,Admin")]
         public IActionResult Edit(int id, Hotel requestArticle)
         {
             var sanitizer = new HtmlSanitizer();
@@ -179,11 +183,12 @@ namespace MDS.Controllers
             Hotel h = db.ListaHoteluri.Find(id);
 
 
-            if (ModelState.IsValid)
-            {
+            try
+            { 
                 if (h.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
                 {
                     h.Nume = requestArticle.Nume;
+                    h.Locatie = requestArticle.Locatie;
 
                     requestArticle.Facilitati = sanitizer.Sanitize(requestArticle.Facilitati);
 
@@ -191,9 +196,10 @@ namespace MDS.Controllers
                      
 
                     h.TaraId = requestArticle.TaraId;
-                    TempData["message"] = "Hotelul a fost modificat";
+                    
                     db.SaveChanges();
-                    return RedirectToAction("Index", "Tari");
+                    TempData["message"] = "Hotelul a fost modificat";
+                    return RedirectToAction("Show", "Hoteluri", new { id = id });
 
                 }
                 else
@@ -203,9 +209,8 @@ namespace MDS.Controllers
 
                 }
             }
-            else
+            catch (Exception e)
             {
-                requestArticle.Tari = GetAllTari();
                 return View(requestArticle);
             }
         }
@@ -223,14 +228,12 @@ namespace MDS.Controllers
                 db.ListaHoteluri.Remove(hotel);
                 db.SaveChanges();
                 TempData["message"] = "Hotelul a fost sters";
-                //return RedirectToAction("Index");
-                return View();
+                return RedirectToAction("Index","Hoteluri");
             }
             else
             {
                 TempData["message"] = "Nu puteti sterge acest hotel";
-                //return RedirectToAction("Index");
-                return View();
+                return RedirectToAction("Index", "Hoteluri");
             }
         }
 

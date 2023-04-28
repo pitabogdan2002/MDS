@@ -9,10 +9,11 @@
 <br />
 
 
-@using (Html.BeginForm(controllerName: "Reviews", actionName: "Edit",
-      method: FormMethod.Post, routeValues: new { id = Model.Id }))
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form method="post" action="/Reviews/Edit/@Model.Id">
 
-{
     @Html.Label("Continut", "Continut comentariu")
 
     <br />
@@ -27,5 +28,8 @@
 
     <button class="btn  btn-primary" type="submit">Editeaza review</button>
 
-}
+            </form>
+        </div>
+    </div>
+</div>
 

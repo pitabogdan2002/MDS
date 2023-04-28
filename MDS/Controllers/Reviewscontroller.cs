@@ -1,4 +1,5 @@
-﻿using MDS.Data;
+﻿using Ganss.Xss;
+using MDS.Data;
 using MDS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ using System.Data;
 
 namespace MDS.Controllers
 {
-    public class ListaReviewsController : Controller
+    public class ReviewsController : Controller
     {
         private readonly ApplicationDbContext db;
 
@@ -16,7 +17,7 @@ namespace MDS.Controllers
 
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ListaReviewsController(
+        public ReviewsController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager
@@ -70,7 +71,9 @@ namespace MDS.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
-            Review rev = db.ListaReviews.Find(id);
+            Review rev = db.ListaReviews.Include("Hotel")
+                                        .Where(art => art.Id == id)
+                                        .First(); 
 
             if (rev.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
@@ -88,28 +91,31 @@ namespace MDS.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id, Review requestReview)
         {
-            Review rev = db.ListaReviews.Find(id);
-
-            if (rev.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            var sanitizer = new HtmlSanitizer();
+            Review rev = db.ListaReviews.Include("Hotel")
+                                          .Where(art=>art.Id==id)
+                                          .First();
+            try
             {
-                if (ModelState.IsValid)
-                {   
-                     
+                if (rev.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+                {
+
+                    requestReview.Continut = sanitizer.Sanitize(requestReview.Continut);
                     rev.Continut = requestReview.Continut;
 
                     db.SaveChanges();
 
-                    return Redirect("/Hoteluri/Show/" + rev.HotelId);
+                    return RedirectToAction("Show", "Hoteluri", new { id = rev.Hotel.Id });
                 }
                 else
                 {
-                    return View(requestReview);
+                    TempData["message"] = "Nu aveti dreptul sa faceti modificari";
+                    return RedirectToAction("Show","Hoteluri", new {id = rev.Hotel.Id} );
                 }
             }
-            else
+            catch (Exception e)
             {
-                TempData["message"] = "Nu aveti dreptul sa faceti modificari";
-                return RedirectToAction("Index", "Tari");
+                return View(requestReview);
             }
         }
     }

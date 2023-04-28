@@ -17,6 +17,7 @@ namespace MDS.Models
 
         public int? HotelId { get; set; }
         public string? UserId { get; set; }
+        public virtual Hotel? Hotel { get; set; }
         public virtual ApplicationUser? User { get; set; }
     }
 }
