@@ -1,0 +1,49 @@
+﻿
+<h1> Cauta</h1>
+<form method="GET">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Select check-in date" id="checkinDate" name="checkinDate" value="@ViewBag.CheckinDate">
+        <input type="text" class="form-control" placeholder="Select check-out date" id="checkoutDate"name="checkoutDate" value="@ViewBag.CheckoutDate">
+        <select class="form-select" aria-label="Select country" name="country">
+            <option value="">Selecteaza tara</option>
+            @foreach (var country in ViewBag.Countries)
+            {
+                    <option value="@country.Nume">@country.Nume</option>
+            }
+        </select>
+        <input type="number" class="form-control" placeholder="Numar de persoane" name="numPersons" value="@ViewBag.NumPersons">
+        <button class="btn btn-outline-success" type="submit">Cauta</button>
+    </div>
+</form>
+
+<section id="pinBoot">
+    @foreach (MDS.Models.Hotel hotel in ViewBag.Hoteluri)
+    {   
+                <article class="white-panel" onclick="location.href='/Hoteluri/Show/@hotel.Id'">
+                <h3 class="card-title text-success py-3 px-3 rounded-2">@hotel.Nume</h3>
+                <div><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
+                <div><i class="bi bi-geo-alt-fill"></i> @hotel.Locatie</div>
+            @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
+            {
+                        <span class="starGlow"></span>
+            }
+            @for (var i = (int.Parse(@Html.Raw(hotel.Rating).ToString()) + 1); i <= 5; i++)
+            {
+                        <span class="starFade"></span>
+            }
+
+
+            </article>
+    }
+</section>
+
+
+<script>
+    $(function() {
+        // Initialize the datepickers
+        $('#checkinDate, #checkoutDate').datepicker({
+            dateFormat: 'yyyy-mm-dd',
+            minDate: 0 // Set the minimum date to today
+        });
+    });
+</script>

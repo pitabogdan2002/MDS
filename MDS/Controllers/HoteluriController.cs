@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System.ComponentModel.Design;
 
 namespace MDS.Controllers
 {
@@ -263,7 +264,7 @@ namespace MDS.Controllers
 
             return selectList;
         }
-
+        
         private void SetAccessRights()
         {
             ViewBag.AfisareButoane = false;
@@ -271,6 +272,47 @@ namespace MDS.Controllers
             ViewBag.EsteAdmin = User.IsInRole("Admin");
             ViewBag.EsteAgent = User.IsInRole("Agent");
             ViewBag.UserCurent = _userManager.GetUserId(User);
+        }
+
+        public IActionResult CautareHoteluri()
+        {
+            var hoteluri = from hot in db.ListaHoteluri
+                           orderby hot.Rating
+                           select hot;
+            var tari = db.ListaTari.ToList();
+            ViewBag.Countries = tari;
+            if (Convert.ToString(HttpContext.Request.Query["checkinDate"]) != null && Convert.ToString(HttpContext.Request.Query["checkoutDate"]) != null)
+            {
+                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "")
+                {
+                    DateTime checkinDate = DateTime.Parse(HttpContext.Request.Query["checkinDate"]);
+                    DateTime checkoutDate = DateTime.Parse(HttpContext.Request.Query["checkoutDate"]);
+                    int numPersons = int.Parse(HttpContext.Request.Query["numPersons"]);
+                    string country = HttpContext.Request.Query["country"];
+
+                    hoteluri = from hot in db.ListaHoteluri
+                                   where hot.Tara.Nume == country
+                                   && hot.ListaCamere.Any(c => !c.ListaRezervari.Any(r => (checkinDate >= r.CheckOut || checkoutDate <= r.CheckIn)))
+             && hot.ListaCamere.Where(c => !c.ListaRezervari.Any(r => (checkinDate >= r.CheckOut|| checkoutDate <= r.CheckIn)))
+                           .Sum(c => c.Capacitate) >= numPersons
+                               orderby hot.Rating
+                                   select hot;
+                }
+              
+                    else
+                    {
+                        TempData["message"] = "Toate campurile sunt obligatorii";
+                        ViewBag.Mesaj = TempData["message"];
+                        return RedirectToAction("CautareHoteluri");
+                    }
+                
+            }
+           
+            ViewBag.CheckinDate = "2023-05-05";
+            ViewBag.CheckoutDate = "2023-05-05";
+            ViewBag.NumPersons = "";
+            ViewBag.Hoteluri = hoteluri;
+            return View();
         }
 
 
