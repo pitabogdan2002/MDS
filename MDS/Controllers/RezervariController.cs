@@ -75,7 +75,6 @@ namespace MDS.Controllers
         public IActionResult New(int id)
         {
             cameratrimisa = id;
-            ViewBag.x = cameratrimisa;
             Rezervare rez = new Rezervare();
             rez.Suma = 0;
             rez.CameraId = id;
@@ -89,13 +88,15 @@ namespace MDS.Controllers
         {
             var sanitizer = new HtmlSanitizer();
 
+
             rez.UserId = _userManager.GetUserId(User);
 
-            var camera = db.ListaCamere.SingleOrDefault(c => c.Id == cameratrimisa);
-            if (camera == null || camera.Disponibila == false)
-            {
-                return RedirectToAction("Show/" + cameratrimisa, "Camere");
-            }
+            var camera = db.ListaCamere.SingleOrDefault(c => c.Id == rez.CameraId);
+            //Camera camera = db.ListaCamere.Find(id);
+            //if (camera == null || camera.Disponibila == false)
+            //{
+               // return RedirectToAction("Show", "Camere", new { id = rez.CameraId });
+            //}
             if (ModelState.IsValid)
             {
                 rez.CheckIn = rez.CheckIn;
@@ -112,7 +113,7 @@ namespace MDS.Controllers
                 db.ListaRezervari.Add(rez);
                 db.SaveChanges();
                 TempData["message"] = "Rezervare facuta cu succes !";
-                return RedirectToAction("Index");
+                return RedirectToAction("Show", "Camere", new { id = rez.CameraId });
             }
             else
             {

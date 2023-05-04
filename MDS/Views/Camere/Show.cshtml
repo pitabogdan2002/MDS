@@ -34,4 +34,36 @@
         </div>
 
     </div>
+
+
+    @foreach (var rez in Model.ListaRezervari)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+
+                <div class="col-md-8">
+
+                    <div>
+
+                        <p>@rez.CheckIn</p>
+                        <small>@rez.CheckOut</small>
+                        @*<strong> <i class="bi bi-person"></i>class@rez.User.UserName</strong>*@
+
+                    </div>
+                    <br>
+
+                    
+
+                    <br />
+
+                </div>
+
+                <div class="col-md-2"></div>
+
+            </div>
+
+        </div>
+    }
 </div>
+
