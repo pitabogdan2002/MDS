@@ -1,6 +1,6 @@
 # Proiect MDS
 
-realizat de: Dănescu Adela-Gabriela, Dîrțu Ecaterina, Mihăilescu Teodor, Pița Bogdan-Ioan 
+realizat de: Dănescu Adela-Gabriela, Dîrțu Ecaterina, Mihailescu Teodor, Pița Bogdan-Ioan 
 
 ## Epic story:
 
