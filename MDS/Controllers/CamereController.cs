@@ -48,6 +48,11 @@ namespace MDS.Controllers
         [Authorize(Roles = "Agent,User,Admin")]
         public IActionResult Show(int id)
         {
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"].ToString();
+            }
+
             Camera camera = db.ListaCamere.Include("Hotel")
                                            .Include("ListaRezervari")
                                            .Include("ListaRezervari.User")

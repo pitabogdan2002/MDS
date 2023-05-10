@@ -33,7 +33,7 @@ namespace MDS.Controllers
 
             _roleManager = roleManager;
         }
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin,Agent")]
         public IActionResult Index()
         {
             var rezervari = db.ListaRezervari.OrderByDescending(a => a.CheckIn).ThenByDescending(a => a.CheckOut)
@@ -70,14 +70,62 @@ namespace MDS.Controllers
             return View();
         }
 
+        public IActionResult RezervarileMele()
+        {
+            var rezervari = db.ListaRezervari.OrderByDescending(a => a.CheckIn).ThenByDescending(a => a.CheckOut)
+                                          .Include("User").Where(a =>a.UserId== _userManager.GetUserId(User));
+            var userName = _userManager.GetUserName(User);
+            var user = db.Users.FirstOrDefault(u => u.UserName == userName);
+            ViewBag.UserName = user.UserName;
+
+
+            int totalItems = rezervari.Count();
+            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+
+            var offset = 0;
+            int _perPage = 8;
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.message = TempData["message"].ToString();
+            }
+
+            if (!currentPage.Equals(0))
+            {
+                offset = (currentPage - 1) * _perPage;
+            }
+
+            var paginatedrezervari = rezervari.Skip(offset).Take(_perPage);
+            ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
+            ViewBag.Rezervari = paginatedrezervari;
+
+            if (totalItems == 0)
+            {
+                TempData["message"] = "Nu s-a gasit nicio rezervare";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.PaginationBaseUrl = "/Rezervari/Index/" + currentPage;
+            }
+
+            return View();
+        }
+
+
         [Authorize(Roles = "User")]
 
         public IActionResult New(int id)
         {
-            cameratrimisa = id;
-            Rezervare rez = new Rezervare();
-            rez.Suma = 0;
-            rez.CameraId = id;
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"].ToString();
+            }
+
+            var rez = new Rezervare
+            {
+                Suma = 0,
+                CameraId = id
+            };
 
             return View(rez);
         }
@@ -87,22 +135,41 @@ namespace MDS.Controllers
         public ActionResult New(Rezervare rez)
         {
             var sanitizer = new HtmlSanitizer();
-
-
+          
             rez.UserId = _userManager.GetUserId(User);
 
-            var camera = db.ListaCamere.SingleOrDefault(c => c.Id == rez.CameraId);
-            //Camera camera = db.ListaCamere.Find(id);
-            //if (camera == null || camera.Disponibila == false)
-            //{
-               // return RedirectToAction("Show", "Camere", new { id = rez.CameraId });
-            //}
+            var camera = db.ListaCamere.Include("Hotel")
+                .Include("ListaRezervari")
+                .Include("ListaRezervari.User")
+                .Where(art => art.Id == rez.CameraId)
+                .First();
+
             if (ModelState.IsValid)
             {
-                rez.CheckIn = rez.CheckIn;
-                rez.CheckOut = rez.CheckOut;
-                rez.ListaClienti = rez.ListaClienti;
-                camera.Disponibila = true;
+                if (rez.CheckOut <= rez.CheckIn)
+                {
+                    TempData["message"] = "Data de check-out trebuie sa fie mai mare decat data de check-in!";
+
+                    if (TempData.ContainsKey("message"))
+                    {
+                        ViewBag.Message = TempData["message"].ToString();
+                    }
+                    return View(rez);
+                }
+
+                var overlappingReservations = camera.ListaRezervari
+                    .Where(r => !(rez.CheckOut < r.CheckIn || rez.CheckIn > r.CheckOut))
+                    .ToList();
+
+                if (overlappingReservations.Count > 0)
+                {
+                    TempData["message"] = "Camera este deja rezervata pentru perioada selectata!";
+                    if (TempData.ContainsKey("message"))
+                    {
+                        ViewBag.Message = TempData["message"].ToString();
+                    }
+                    return View(rez);
+                }
 
                 TimeSpan zile = rez.CheckOut - rez.CheckIn;
                 int nrzile = (int)zile.TotalDays;
@@ -112,15 +179,20 @@ namespace MDS.Controllers
 
                 db.ListaRezervari.Add(rez);
                 db.SaveChanges();
-                TempData["message"] = "Rezervare facuta cu succes !";
+                TempData["message"] = "Rezervare facuta cu succes!";
                 return RedirectToAction("Show", "Camere", new { id = rez.CameraId });
             }
             else
             {
+                if (TempData.ContainsKey("message"))
+                {
+                    ViewBag.Message = TempData["message"].ToString();
+                }
                 rez.Suma = 0;
                 return View(rez);
             }
         }
+
 
 
         [Authorize(Roles = "User,Admin")]
@@ -134,7 +206,7 @@ namespace MDS.Controllers
             SetAccessRights();
             return View();
         }
-    
+
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
@@ -154,7 +226,7 @@ namespace MDS.Controllers
             return View(rezervare);
         }
 
-      
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "User,Admin")]
@@ -198,12 +270,12 @@ namespace MDS.Controllers
             return RedirectToAction("Index");
         }
 
- 
+
         private void SetAccessRights()
         {
             ViewBag.AfisareButoane = false;
 
-            if (User.IsInRole("User") )
+            if (User.IsInRole("User"))
             {
                 ViewBag.AfisareButoane = true;
             }
@@ -213,7 +285,7 @@ namespace MDS.Controllers
             ViewBag.UserCurent = _userManager.GetUserId(User);
         }
 
-    
+
 
     }
 }

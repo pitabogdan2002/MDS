@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "RezervarileMele";
 }
 
 <h2 class="text-center mb-4">Toate Rezervari</h2>
@@ -19,10 +19,13 @@
                 <div class="card-body">
                     <h5 class="card-title">@Html.Raw(reservation.ListaClienti)</h5>
                     <p class="card-text"><strong>Check-in:</strong> @Html.Raw(reservation.CheckIn)</p>
-                <p class="card-text"><strong>Check-out:</strong> @Html.Raw(reservation.CheckOut)</p>
-                    <p class="card-text"><strong>Client:</strong> @Html.Raw(reservation.UserId)</p>
+                    <p class="card-text"><strong>Check-out:</strong> @Html.Raw(reservation.CheckOut)</p>
+                    <p class="card-text"><strong>Client Id:</strong> @Html.Raw(reservation.UserId)</p>
+                    <p class="card-text"><strong>User Name:</strong>  @ViewBag.UserName</p>
 
-            </div>
+
+
+                </div>
                 <div class="card-footer text-center">
                     <a href="/Rezervari/Show/@reservation.Id" class="btn btn-primary">Details</a>
                 </div>

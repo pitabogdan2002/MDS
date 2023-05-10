@@ -1,37 +1,66 @@
 ﻿@model MDS.Models.Hotel
-<div class="card">
-    <div class="card-body">
+<div class="card bg-light p-4 rounded-lg">
+    <div class="d-flex justify-content-between align-items-center">
         <h3 class="card-title alert-success py-3 px-3 rounded-2">@Model.Nume</h3>
-        <div>
-             
-            <div>
-                @for (var i = 1; i <= @ViewBag.RatingAvg; i++)
-                {
-                    <span class="starGlowN"></span>
-                }
-                @for (var i = (@ViewBag.RatingAvg + 1); i <= 5; i++)
-                {
-                    <span class="starFadeN"></span>
-                }
-            </div>
-        </div>
-        <div class="card-text font-weight-bold">Facilitati:</div>
-        <div class="card-text">@Model.Facilitati</div>
-        <div class="card-text font-weight-bold">Locatie:</div>
-        <div class="card-text">@Model.Locatie</div>
-        <div class="d-flex justify-content-between flex-row mt-5">
-            <div><i class="bi bi-globe"></i> @Model.Tara.Nume</div>
+        <div class="rating">
+            @for (var i = 1; i <= @ViewBag.RatingAvg; i++)
+            {
+                <span class="starGlowN"></span>
+            }
+            @for (var i = (@ViewBag.RatingAvg + 1); i <= 5; i++)
+            {
+                <span class="starFadeN"></span>
+            }
         </div>
     </div>
-    @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteAgent)
-    {
-        <div class="d-flex flex-row justify-content-between p-3 border-1 border-top">
-            <a class="btn btn-success" href="/Hoteluri/Edit/@Model.Id">Editeaza Hotel</a>
-            <form method="post" action="/Hoteluri/Delete/@Model.Id">
-                <button class="btn btn-danger" type="submit">Sterge Hotel</button>
-            </form>
-        </div>
-    }
+    <div class="card-text font-weight-bold mt-4">Facilitati:</div>
+    <div class="card-text">@Model.Facilitati</div>
+    <div class="card-text font-weight-bold mt-4">Locatie:</div>
+    <div class="card-text">@Model.Locatie</div>
+    <div class="d-flex justify-content-between flex-row mt-5 align-items-center">
+        <div><i class="bi bi-globe"></i> @Model.Tara.Nume</div>
+        @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteAgent)
+        {
+            <div>
+                <a class="btn btn-success" href="/Hoteluri/Edit/@Model.Id">Editeaza Hotel</a>
+                <form method="post" action="/Hoteluri/Delete/@Model.Id">
+                    <button class="btn btn-danger" type="submit">Sterge Hotel</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        @foreach (var camera in Model.ListaCamere)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card bg-light rounded-lg p-4">
+                    <h4 class="text-uppercase mb-3">@camera.Nume</h4>
+                    <a class="btn btn-outline-primary mb-3" href="/Camere/Show/@camera.Id">
+                        <i class="bi bi-eye"></i> Vizualizeaza camera
+                    </a>
+                    @if (camera.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+                    {
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a class="btn btn-outline-primary" href="/Camere/Edit/@camera.Id">
+                                    <i class="bi bi-pencil-square"></i> Editeaza
+                                </a>
+                            </div>
+                            <div>
+                                <form method="post" action="/Camere/Delete/@camera.Id">
+                                    <button class="btn btn-outline-danger" type="submit">
+                                        <i class="bi bi-trash"></i> Sterge
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 <br />
@@ -39,37 +68,6 @@
 
 @* Afisare camere impreuna cu butoanele de editare si stergere *@
 
-@foreach (var camera in Model.ListaCamere)
-{
-<div class="container mb-5">
-<div class="row">
-<div class="col-md-2"></div>
-
-            <div class="col-md-8 bg-light rounded-lg p-4">
-
-                <h4 class="text-uppercase mb-3">@camera.Nume</h4>
-                <a class="btn btn-outline-primary mb-3" href="/Camere/Show/@camera.Id"><i class="bi bi-eye"></i> Vizualizeaza camera</a>
-
-                @if (camera.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
-                {
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <a class="btn btn-outline-primary" href="/Camere/Edit/@camera.Id"><i class="bi bi-pencil-square"></i> Editeaza</a>
-                        </div>
-                        <div>
-                            <form method="post" action="/Camere/Delete/@camera.Id">
-                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i> Sterge</button>
-                            </form>
-                        </div>
-                    </div>
-                }
-
-            </div>
-
-            <div class="col-md-2"></div>
-        </div>
-    </div>
-}
 
 @if (ViewBag.EsteAdmin)
 
