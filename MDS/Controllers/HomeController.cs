@@ -42,6 +42,7 @@ namespace MDS.Controllers
             {
                 return RedirectToAction("Index", "Tari");
             }
+
             var search = "";
 
             var tari = db.ListaTari.OrderBy(a => a.Nume).ToList();
@@ -49,9 +50,9 @@ namespace MDS.Controllers
             if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
             {
                 search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
-                List<int> tariid = db.ListaTari.Where(t => t.Nume.Contains(search) )
+                List<int> tariid = db.ListaTari.Where(t => t.Nume.Contains(search))
                     .Select(a => a.Id).ToList();
-                   tari = db.ListaTari.Where(t => tariid.Contains(t.Id)).ToList();
+                tari = db.ListaTari.Where(t => tariid.Contains(t.Id)).ToList();
 
             }
             ViewBag.SearchString = search;
