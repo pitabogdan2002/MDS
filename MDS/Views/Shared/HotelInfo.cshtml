@@ -1,0 +1,39 @@
+﻿@model MDS.Models.Tara
+ 
+
+
+
+
+           @foreach (var hotel in Model.ListaHoteluri)
+            {   <div class="card-body">
+                  <h3 class="card-title alert-success py-3 px-3 rounded-2">@hotel.Nume</h3>
+                     <div class="card">
+
+            <div>
+            @for (var i = 1; i <= @hotel.Rating; i++)
+            {
+                <span class="starGlow"></span>
+            }
+                @for (var i =(@hotel.Rating + 1); i <= 5; i++)
+            {
+                <span class="starFade"></span>
+            }
+            </div>
+            <div class="card-text">@hotel.Facilitati</div>
+            <p class="card-text">Locatie: @hotel.Locatie</p>
+
+            <div class="d-flex justify-content-between flex-row mt-5">
+                <div>  @hotel.Tara</div>
+            <br />
+
+             
+        </div>
+
+            </div>
+     
+
+        </div>
+
+    }
+
+

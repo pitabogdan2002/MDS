@@ -1,5 +1,5 @@
 ﻿@model MDS.Models.Tara
-
+<h2>Afisare Hoteluri</h2>
 @if (ViewBag.Message != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -7,39 +7,27 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+<section id="pinBoot">
+    @foreach (var hotel in Model.ListaHoteluri)
+    {
+                <article class="white-panel" onclick="location.href='/Hoteluri/Show/@hotel.Id'">
+            <h4>@Html.Raw(hotel.Nume)</h4>
+            <p>@Html.Raw(hotel.Facilitati)</p>
+            <p>@Html.Raw(hotel.Locatie)</p>
+            <div>
+                @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
+                {
+                    <span class="starGlow"></span>
+                }
+                @for (var i = (int.Parse(@Html.Raw(hotel.Rating).ToString()) + 1); i <= 5; i++)
+                {
+                    <span class="starFade"></span>
+                }
 
-<div class="card border-0 shadow">
-    <div class="card-header bg-gradient bg-primary text-white border-0 rounded-top py-4">
-        <h1 class="fw-bold text-center mb-0">@Model.Nume</h1>
-    </div>
-    <div class="card-body">
-        <h2 class="fw-bold mb-3 text-center">Lista Hoteluri</h2>
-        <hr class="my-4">
-        <div class="row">
-            @foreach (var hotel in Model.ListaHoteluri)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card border-0 shadow-sm">
-                         
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold mb-2">Nume: @hotel.Nume</h4>
-                            <p class="card-text">Rating: </p>
-                          
-                            @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
-                            {
-                                <span class="starGlow"></span>
-                            }
-                            @for (var i = (int.Parse(@Html.Raw(hotel.Rating).ToString()) + 1); i <= 5; i++)
-                            {
-                                <span class="starFade"></span>
-                            }
-                            <p class="card-text">Locatie: @hotel.Locatie</p>
-                            <a href="/Hoteluri/Show/@hotel.Id" class="btn btn-primary">Detalii</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</div>
- 
+              </div>
+
+
+
+                    </article>
+    }
+</section> 

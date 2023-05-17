@@ -20,7 +20,7 @@
                     <h5 class="card-title">@Html.Raw(reservation.ListaClienti)</h5>
                     <p class="card-text"><strong>Check-in:</strong> @Html.Raw(reservation.CheckIn)</p>
                 <p class="card-text"><strong>Check-out:</strong> @Html.Raw(reservation.CheckOut)</p>
-                    <p class="card-text"><strong>Client:</strong> @Html.Raw(reservation.UserId)</p>
+                    <p class="card-text"><strong>Client:</strong> @Html.Raw(reservation.User.UserName)</p>
 
             </div>
                 <div class="card-footer text-center">

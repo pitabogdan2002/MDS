@@ -22,19 +22,12 @@
     </div>
 </form>
 
-<section id="pinBoot" class="row row-cols-1 row-cols-md-2 g-4">
+<section id="pinBoot">
     @foreach (var tara in ViewBag.Tari)
     {
-        <article class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.Raw(tara.Nume)</h5>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="/Tari/Show/@tara.Id" class="btn btn-primary">Vezi hoteluri</a>
+        <article class="white-panel" onclick="location.href='/Tari/Show/@tara.Id'">
+            <h4>@Html.Raw(tara.Nume)</h4>
 
-                </div>
-            </div>
         </article>
     }
 </section>
