@@ -1,60 +1,63 @@
 # Proiect MDS
 
-realizat de: Dănescu Adela-Gabriela, Dîrțu Ecaterina, Mihailescu Teodor, Pița Bogdan-Ioan 
+Dănescu Adela-Gabriela, Dîrțu Ecaterina, Mihailescu Teodor, Pița Bogdan-Ioan 
+
+grupa 242
+
 
 ## Epic story:
 
-Booking.com este suprasolicitat, 
-pentru binele cumparatorilor vrem sa ii ajutam 
-sa gaseasca cele mai bune preturi intr-o noua aplicatie realizata de noi
+#### Booking.com este suprasolicitat. 
+#### Pentru binele cumparatorilor, vrem sa ii ajutam sa gaseasca cele mai bune preturi intr-o noua aplicatie realizata de noi!
 
 
 ## User stories:
 
-### DONE must
-- login standard (1p) + tipuri de useri cu atributiile lor - admin/agent/user (2p)
+### MUST: (3p) logarea userilor cu diferite roluri  :heavy_check_mark:
+- (1p) login standard 
+- (2p) tipuri de useri si atributiile lor (observatie: fiecare rol are toate posibilitatile enumerate la cele de deasupra sa)
+  - user nelogat (poate vizualiza toate paginile)
+  - user logat (poate rezerva camere + poate modifica/sterge propriile rezervari si poate adauga review-uri hotelurilor + poate modifica/sterge propriile review-uri)
+  - agent (poate adauga hoteluri + poate modifica/sterge propriile hoteluri, poate sterge/modifica orice rezervare)
+  - admin (poate adauga/modifica/sterge orice - inclusiv tari)
 
-de ex: daca nu e user logat poate doar vedea cazarile, nu poate rezerva  (3p total)
 
-### DONE must
-structura de baza: (CRUD standard) (7p total)
-- tari (tip categorii) (1p)	
-- hoteluri 		(1p)    
-- review-uri 	(1p)				
-- camere	(2p)
-- rezervare 	(2p)
+### MUST: (7p) structura de baza (CRUD standard)  :heavy_check_mark:
+- (1p) tari	
+- (1p) hoteluri     
+- (1p) review-uri 					
+- (2p) camere
+- (2p) rezervari
 
-### PARTIAL must
-- interfata (10p total) - cate (2p) pt fiecare unitate de baza
 
-### should
-- filtru pe descrierea hotelului (3p)
-	(zona, distante) 
+### MUST: (10p) interfata  :soon: (60%)  
+- cate (2p) pt fiecare unitate de baza din lista de la punctul anterior
 
-### should
-- filtru pe descrierea hotelului (2p)
-	(obiective, activitati)
 
-### should
-- search pe baza de: pret min max, perioada, review-uri etc (2p)
+### SHOULD: (5p) filtrare dupa descrierea hotelului :heavy_check_mark:
+- pot fi bifate o serie de cerinte cautate (pret, specificatii din descriere etc)
 
-### DONE should
-- la rezervari, daca sunt locuri libere intre data start-data fin (1p)
-		(task: fct cu frecventa) se face, daca nu, nu se poate
 
-### should
-- istoric al rezervarilor anterioare (pentru reutilizare de ex) (2p)
+### SHOULD: (3p) cautare personalizata pentru a afisa camerele disponibile :heavy_check_mark:
+- tara
+- perioada (check-in, check-out)
+- numarul persoanelor pentru care se va face rezervarea
 
-### nice
-- recomandari pe baza unor rezervari anterioare / tari deja vizitate (3p)
 
-### nice
-cumparatori care nu mai vor sa mearga, in loc sa anuleze (se poate si asta - delete din crud), 
-	pun inapoi pe site si acele cazari sunt cu reducere (~ resale pt altii)
- (o rezervare anulata devine oferta pt alti utilizatori 
-	si le apare atunci cand dechid descrierea hotelului) (8p total)
-- modificarea CRUD-ului (3p) 
-- notificare daca ceva la resale era in recomandari (3p)
-- hotelurile la care exista resale sa apara primele pe pagina (2p)
+### SHOULD: (2p) verificarea perioadei la crearea unei rezervari :heavy_check_mark:
+- doar daca sunt locuri libere intre check-in si check-out, rezervarea este adaugata in baza de date
+		
 
-     ~ 41p
+### SHOULD: (4p) istoric al rezervarilor anterioare 
+- sunt folosite pentru recomandari (vor aparea primele tarile deja vizitate)
+
+
+### NICE: (10p) transferul unor rezervari de la un user la altul 
+cumparatori care vor sa renunte la rezervare, pe langa varianta de a anula (astfel vor pierde toti banii), 
+	ei pot pune pe site un anunt: aceasta devine oferta pentru alti utilizatori si le apare atunci cand deschid descrierea hotelului (astfel )
+- (5p) modificarea CRUD-ului 
+- (5p) aceste oferte vor fi primele:
+  - (2p) pe pagina la recomandari
+  - (3p) pe pagina cu hoteluri dupa cautare daca se potrivesc cu campurile selectate
+
+##### ~ 44p

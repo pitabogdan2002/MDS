@@ -38,6 +38,7 @@ namespace MDS.Controllers
         {
             var rezervari = db.ListaRezervari.OrderByDescending(a => a.CheckIn).ThenByDescending(a => a.CheckOut)
                                           .Include("User");
+
             int totalItems = rezervari.Count();
             var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
 
@@ -71,7 +72,7 @@ namespace MDS.Controllers
         }
 
         public IActionResult RezervarileMele()
-        {
+        {   
             var rezervari = db.ListaRezervari.OrderByDescending(a => a.CheckIn).ThenByDescending(a => a.CheckOut)
                                           .Include("User").Where(a =>a.UserId== _userManager.GetUserId(User));
             var userName = _userManager.GetUserName(User);
