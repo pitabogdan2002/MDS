@@ -7,13 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.ComponentModel.Design;
 
 namespace MDS.Controllers
 {
+
     [Authorize]
     public class HoteluriController : Controller
     {
+        private Dictionary<Hotel, List<Camera>> availableRoomsByHotel ;
 
         private readonly ApplicationDbContext db;
 
@@ -274,32 +277,74 @@ namespace MDS.Controllers
             ViewBag.UserCurent = _userManager.GetUserId(User);
         }
 
-        public IActionResult CautareHoteluri()
+        public IActionResult CautareHoteluri(List<string> selectedFilters)
         {
+
+            List<string> filterOptions = new List<string>
+    {
+        "Filter1",
+        "Filter2",
+        "Filter3"
+    };
+
+            ViewBag.FilterOptions = filterOptions;
+            ViewBag.SelectedFilters = selectedFilters;
+
+            //ViewBag.Hoteluri = null;
             var hoteluri = from hot in db.ListaHoteluri
                            orderby hot.Rating
                            select hot;
             var tari = db.ListaTari.ToList();
             ViewBag.Countries = tari;
+            //ViewBag.Hoteluri = hoteluri;
+
+
+            var hotelsWithAvailableRooms = new List<Hotel>();
             if (Convert.ToString(HttpContext.Request.Query["checkinDate"]) != null && Convert.ToString(HttpContext.Request.Query["checkoutDate"]) != null)
             {
                 if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "")
                 {
+
                     DateTime checkinDate = DateTime.Parse(HttpContext.Request.Query["checkinDate"]);
                     DateTime checkoutDate = DateTime.Parse(HttpContext.Request.Query["checkoutDate"]);
+
+                    ViewBag.In = checkinDate;
+                    ViewBag.Out = checkoutDate;
                     int numPersons = int.Parse(HttpContext.Request.Query["numPersons"]);
                     string country = HttpContext.Request.Query["country"];
 
-                    hoteluri = from hot in db.ListaHoteluri
-                                   where hot.Tara.Nume == country
-                                   && hot.ListaCamere.Any(c => !c.ListaRezervari.Any(r => (checkinDate >= r.CheckOut || checkoutDate <= r.CheckIn)))
-             && hot.ListaCamere.Where(c => !c.ListaRezervari.Any(r => (checkinDate >= r.CheckOut|| checkoutDate <= r.CheckIn)))
-                           .Sum(c => c.Capacitate) >= numPersons
-                               orderby hot.Rating
-                                   select hot;
+                    var hotels = db.ListaHoteluri.Include(h => h.ListaCamere).Where(h => h.Tara.Nume == country).ToList();
+                    availableRoomsByHotel = new Dictionary<Hotel, List<Camera>>();
+
+                    foreach (var hotel in hotels)
+                    {
+                        var availableRooms = hotel.ListaCamere
+                        .Where(room =>
+                             room.Capacitate >= numPersons &&
+                        !db.ListaRezervari.Any(reservation =>
+                        reservation.CameraId == room.Id &&
+                         reservation.CheckIn <= checkinDate &&
+                        reservation.CheckOut >= checkoutDate
+                    )  ).ToList();
+
+                        if (selectedFilters != null && selectedFilters.Any())
+                        {
+                            availableRooms = availableRooms.Where(room =>
+                                selectedFilters.All(filter => room.Descriere.Contains(filter))).ToList();
+                        }
+
+                        if (availableRooms.Count > 0)
+                        {
+                            hotelsWithAvailableRooms.Add(hotel);
+                        }
+                        availableRoomsByHotel.Add(hotel, availableRooms);
+                    }
+
+                   ViewBag.CamereHoteluri =  availableRoomsByHotel;
+
                 }
-              
-                    else
+
+                else
                     {
                         TempData["message"] = "Toate campurile sunt obligatorii";
                         ViewBag.Mesaj = TempData["message"];
@@ -311,8 +356,24 @@ namespace MDS.Controllers
             ViewBag.CheckinDate = "2023-05-05";
             ViewBag.CheckoutDate = "2023-05-05";
             ViewBag.NumPersons = "";
-            ViewBag.Hoteluri = hoteluri;
+            ViewBag.Hoteluri = hotelsWithAvailableRooms;
+
             return View();
+        }
+
+
+       
+
+        private List<string> GetDesiredItemsOptions()
+        {
+            // Retrieve options from a data source or hard-code them
+            List<string> options = new List<string>
+            {
+                "Room Service",
+                "AC"
+            };
+
+            return options;
         }
 
 
