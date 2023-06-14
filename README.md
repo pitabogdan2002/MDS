@@ -13,6 +13,8 @@ grupa 242
 
 ## User stories:
 
+[Link Trello](https://trello.com/invite/mdsbestbooking/ATTI433e5f54374e851e879a648323e985b6BA271634)
+
 ### MUST: (3p) logarea userilor cu diferite roluri  :heavy_check_mark:
 - (1p) login standard 
 - (2p) tipuri de useri si atributiile lor (observatie: fiecare rol are toate posibilitatile enumerate la cele de deasupra sa)
@@ -30,12 +32,12 @@ grupa 242
 - (2p) rezervari
 
 
-### MUST: (10p) interfata  :soon: (60%)  
+### MUST: (10p) interfata  :heavy_check_mark:
 - cate (2p) pt fiecare unitate de baza din lista de la punctul anterior
 
 
 ### SHOULD: (5p) filtrare dupa descrierea hotelului :heavy_check_mark:
-- pot fi bifate o serie de cerinte cautate (pret, specificatii din descriere etc)
+- pot fi bifate o serie de cerinte cautate (specificatii din descriere etc)
 
 
 ### SHOULD: (3p) cautare personalizata pentru a afisa camerele disponibile :heavy_check_mark:
@@ -48,8 +50,8 @@ grupa 242
 - doar daca sunt locuri libere intre check-in si check-out, rezervarea este adaugata in baza de date
 		
 
-### SHOULD: (4p) istoric al rezervarilor anterioare 
-- sunt folosite pentru recomandari (vor aparea primele tarile deja vizitate)
+### SHOULD: (4p) istoric al rezervarilor anterioare :heavy_check_mark:
+- orice utilizator poate vedea o lista cu toate rezervarile sale
 
 
 ### NICE: (10p) transferul unor rezervari de la un user la altul 
@@ -60,4 +62,4 @@ cumparatori care vor sa renunte la rezervare, pe langa varianta de a anula (astf
   - (2p) pe pagina la recomandari
   - (3p) pe pagina cu hoteluri dupa cautare daca se potrivesc cu campurile selectate
 
-##### ~ 44p
+##### ~ 34/44p
