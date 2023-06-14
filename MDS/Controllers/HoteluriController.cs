@@ -279,12 +279,15 @@ namespace MDS.Controllers
 
         public IActionResult CautareHoteluri(List<string> selectedFilters)
         {
-
+            ViewBag.Message = null;
             List<string> filterOptions = new List<string>
     {
-        "Filter1",
-        "Filter2",
-        "Filter3"
+        "AC",
+        "Mic Dejun",
+        "Cina",
+        "Balcon",
+        "Cada",
+        "Room Service"
     };
 
             ViewBag.FilterOptions = filterOptions;
@@ -302,11 +305,18 @@ namespace MDS.Controllers
             var hotelsWithAvailableRooms = new List<Hotel>();
             if (Convert.ToString(HttpContext.Request.Query["checkinDate"]) != null && Convert.ToString(HttpContext.Request.Query["checkoutDate"]) != null)
             {
-                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "")
+                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "" && HttpContext.Request.Query["numPersons"]!="" && HttpContext.Request.Query["country"] != "")
                 {
 
                     DateTime checkinDate = DateTime.Parse(HttpContext.Request.Query["checkinDate"]);
                     DateTime checkoutDate = DateTime.Parse(HttpContext.Request.Query["checkoutDate"]);
+
+
+                    TimeSpan zile = checkoutDate -checkinDate;
+                    int nrzile = (int)zile.TotalDays;
+                    if (nrzile == 0)
+                        nrzile = 1;
+                    ViewBag.Nrzile = nrzile;
 
                     ViewBag.In = checkinDate;
                     ViewBag.Out = checkoutDate;
@@ -346,15 +356,19 @@ namespace MDS.Controllers
 
                 else
                     {
-                        TempData["message"] = "Toate campurile sunt obligatorii";
-                        ViewBag.Mesaj = TempData["message"];
-                        return RedirectToAction("CautareHoteluri");
-                    }
-                
+                    TempData["message"] = "Toate campurile sunt obligatorii";
+                    ViewBag.Message = TempData["message"].ToString();
+                    //return RedirectToAction("CautareHoteluri");
+                    
+
+                }
+
             }
-           
-            ViewBag.CheckinDate = "2023-05-05";
-            ViewBag.CheckoutDate = "2023-05-05";
+
+
+            ViewBag.CheckinDate = DateTime.Now.ToString("yyyy-MM-dd");
+            ViewBag.CheckoutDate =  DateTime.Now.ToString("yyyy-MM-dd");
+            ;
             ViewBag.NumPersons = "";
             ViewBag.Hoteluri = hotelsWithAvailableRooms;
 

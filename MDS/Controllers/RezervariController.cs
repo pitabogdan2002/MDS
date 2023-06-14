@@ -131,6 +131,11 @@ namespace MDS.Controllers
             return View(rez);
         }
 
+
+        
+
+
+
         [HttpPost]
         [Authorize(Roles = "User")]
         public ActionResult New(Rezervare rez)

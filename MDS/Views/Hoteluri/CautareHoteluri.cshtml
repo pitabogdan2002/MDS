@@ -1,4 +1,11 @@
 ﻿@model MDS.Models.Hotel
+
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <div class="alert alert-info">
+        @ViewBag.Message
+    </div>
+}
 <h1> Cauta</h1>
 <form method="GET">
     <div class="input-group mb-3">
@@ -53,21 +60,21 @@
                         foreach (MDS.Models.Camera camera in availableRooms)
                         {
                             <div>
-                                <div>Room Type: @camera.Capacitate</div>
-                                <div>Room Price: @camera.PretNoapte</div>
-                                <div>Room Description: @camera.Descriere</div>
+                                <div>Capacitate camera: @camera.Capacitate</div>
+                                <div>Pret Total: @(ViewBag.Nrzile * camera.PretNoapte)</div>
+                                <div>Descriere: @camera.Descriere</div>
                                 <button class="book-button" onclick="location.href='/Rezervari/New'">Rezerva</button>
                             </div>
                         }
                     }
                     else
                     {
-                        <div>No available rooms at the moment.</div>
+                        <div>Nu sunt camere disponibile cu cerințele date</div>
                     }
                 }
                 else
                 {
-                    <div>No available rooms at the moment.</div>
+                    <div>Nu sunt camere disponibile cu cerințele date</div>
                 }
             </article>
         </div>
