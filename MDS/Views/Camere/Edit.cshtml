@@ -1,37 +1,64 @@
 ﻿@model MDS.Models.Camera
 
-<h2 class="text-center mt-5">Editare camera</h2>
-<br />
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+    </style>
+</head>
+
+<h2 class="text-center mt-5 custom-header">Editează camera</h2>
+
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 offset-3">
             <form method="post" action="/Camere/Edit/@Model.Id">
 
-                @Html.Label("Nume", "Nume Camera")
+                @Html.Label("Nume", "Nume")
                 <br />
                 @Html.EditorFor(m => m.Nume, new { htmlAttributes = new { @class = "form-control" } })
                 <br /><br />
-                @Html.Label("Capacitate", "Capacitate Camera")
+                @Html.Label("Capacitate", "Capacitate")
                 <br />
                 @Html.EditorFor(m => m.Capacitate, new { htmlAttributes = new { @class = "form-control" } })
                 <br /><br />
-                @Html.Label("Descriere", "Descriere Articol")
+                @Html.Label("Descriere", "Descriere")
                 <br />
                 @Html.TextArea("Descriere", null, new { @class = "summernote" })
                 @*@Html.Editor("Content", new { htmlAttributes = new { @class = "form-control" } })*@
                 <br /><br />
-                @Html.Label("PretNoapte", "Tarif Camera")
+                @Html.Label("PretNoapte", "Tarif")
                 <br />
                 @Html.EditorFor(m => m.PretNoapte, new { htmlAttributes = new { @class = "form-control" } })
-                <br /><br />
+                <br />
 
-                <label>Selectati categoria</label>
+                <label>Selectați categoria</label>
                 @Html.DropDownListFor(m => m.HotelId,
                 new SelectList(Model.Hoteluri, "Value", "Text"),
                 "Selectati Hotelul", new { @class = "form-control" })
                 <br />
-                <button class="btn btn-sm btn-success" type="submit">Modifica camera</button>
-
+                <button class="btn btn-sm btn-success custom-button" type="submit">Aplică modificările</button>
+                <br />
             </form>
         </div>
     </div>

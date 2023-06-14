@@ -4,9 +4,33 @@
 @{
     ViewBag.Title = "Edit";
 }
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
 
-<h2>Editare review</h2>
-<br />
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+    </style>
+</head>
+
+<h2 class="text-center mt-5 custom-header">Editează review-ul</h2>
 
 
 <div class="container mt-5">
@@ -14,19 +38,17 @@
         <div class="col-6 offset-3">
             <form method="post" action="/Reviews/Edit/@Model.Id">
 
-    @Html.Label("Continut", "Continut comentariu")
+    @Html.Label("Continut", "Conținut")
 
     <br />
 
     @Html.Editor("Continut", new { @class = "form-control" })
     <br />
 
-
     @Html.ValidationMessage("Continut", null, new { @class = "text-danger" })
+                <br />
 
-
-
-    <button class="btn  btn-primary" type="submit">Editeaza review</button>
+                <button class="btn  btn-primary custom-button" type="submit">Aplică modificările</button>
 
             </form>
         </div>

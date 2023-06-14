@@ -2,7 +2,58 @@
     ViewBag.Title = "Tari";
 }
 
-<h2 class="text-center mb-4">Lista tarilor</h2>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+        .custom-textbox {
+            font-family: 'Lobster', cursive;
+            background-color: #cce6ff;
+            border: 1px solid #0080ff;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+            .custom-textbox::placeholder {
+                color: #1a8cff; 
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+    </style>
+</head>
+
+<h2 class="text-center mt-5 custom-header">În ce țară vrei să călătorești?</h2>
 @if (ViewBag.Message != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -16,9 +67,9 @@
 @* Motorul de cautare *@
 <form method="GET">
     <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Cauta o tara" name="search"
+        <input type="text" class="form-control custom-textbox" placeholder="Caută o țară" name="search"
                value="@ViewBag.SearchString">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <button class="btn btn-outline-success custom-button" type="submit">Search</button>
     </div>
 </form>
 
@@ -26,7 +77,7 @@
     @foreach (var tara in ViewBag.Tari)
     {
         <article class="white-panel" onclick="location.href='/Tari/Show/@tara.Id'">
-            <h4>@Html.Raw(tara.Nume)</h4>
+            <h4 class="custom-header">@Html.Raw(tara.Nume)</h4>
 
         </article>
     }
@@ -64,18 +115,3 @@
         </ul>
     </nav>
 </div>
-
-<style>
-    /* Add custom styles here */
-
-    /* Set background color for the "Vezi hoteluri" button */
-    .btn-primary {
-        background-color: #007bff;
-    }
-
-    /* Center the card footer */
-    .card-footer {
-        display: flex;
-        justify-content: center;
-    }
-</style>

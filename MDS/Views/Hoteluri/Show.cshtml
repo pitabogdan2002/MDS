@@ -1,7 +1,58 @@
 ﻿@model MDS.Models.Hotel
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+            
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+        .custom-textbox {
+            font-family: 'Lobster', cursive;
+            background-color: #cce6ff;
+            border: 1px solid #0080ff;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+
 <div class="card bg-light p-4 rounded-lg">
+
     <div class="d-flex justify-content-between align-items-center">
-        <h3 class="card-title alert-success py-3 px-3 rounded-2">@Model.Nume</h3>
+        <h3 class="card-title py-3 px-3 rounded-2 custom-header">@Model.Nume</h3>
         <div class="rating">
             @for (var i = 1; i <= @ViewBag.RatingAvg; i++)
             {
@@ -13,45 +64,59 @@
             }
         </div>
     </div>
-    <div class="card-text font-weight-bold mt-4">Facilitati:</div>
-    <div class="card-text">@Model.Facilitati</div>
-    <div class="card-text font-weight-bold mt-4">Locatie:</div>
-    <div class="card-text">@Model.Locatie</div>
+
+    <div class="card-text font-weight-bold mt-4 custom-text">Facilitățile noastre:</div>
+    <div class="card-text custom-text">@Model.Facilitati</div>
+
+    <div class="card-text font-weight-bold mt-4 custom-text">Adresa:</div>
+    <div class="card-text custom-text">@Model.Locatie</div>
+
     <div class="d-flex justify-content-between flex-row mt-5 align-items-center">
-        <div><i class="bi bi-globe"></i> @Model.Tara.Nume</div>
-        @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteAgent)
-        {
-            <div>
-                <a class="btn btn-success" href="/Hoteluri/Edit/@Model.Id">Editeaza Hotel</a>
-                <form method="post" action="/Hoteluri/Delete/@Model.Id">
-                    <button class="btn btn-danger" type="submit">Sterge Hotel</button>
-                </form>
-            </div>
-        }
+        <div class="custom-text"><i class="bi bi-globe"></i> @Model.Tara.Nume</div>
+        <div>
+            @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteAgent)
+            {
+                <div class="d-flex">
+                    <div>
+                        <a class="btn btn-success mr-2 custom-button" href="/Hoteluri/Edit/@Model.Id">Editează</a>
+                    </div>
+                    <div style="width: 10px;"></div>
+                    <div>
+                        <form method="post" action="/Hoteluri/Delete/@Model.Id">
+                            <button class="btn btn-danger custom-button" type="submit">Șterge</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
+
 </div>
+
+
 <div class="container my-5">
-    <div class="row justify-content-center">
+    <div class="row">
         @foreach (var camera in Model.ListaCamere)
         {
             <div class="col-md-3 mb-4">
                 <div class="card bg-light rounded-lg p-4">
-                    <h4 class="text-uppercase mb-3">@camera.Nume</h4>
+                    <h4 class="text-uppercase mb-3 custom-header">@camera.Nume</h4>
                     <a class="btn btn-outline-primary mb-3" href="/Camere/Show/@camera.Id">
-                        <i class="bi bi-eye"></i> Vizualizeaza camera
+                        <i class="bi bi-eye "></i> Vizualizează camera
                     </a>
                     @if (camera.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
                     {
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
                             <div>
-                                <a class="btn btn-outline-primary" href="/Camere/Edit/@camera.Id">
-                                    <i class="bi bi-pencil-square"></i> Editeaza
+                                <a class="btn btn-success mr-2 custom-button" href="/Camere/Edit/@camera.Id">
+                                    <i class="bi bi-pencil"></i> Editează
                                 </a>
                             </div>
+                            <div style="width: 20px;"></div>
                             <div>
                                 <form method="post" action="/Camere/Delete/@camera.Id">
-                                    <button class="btn btn-outline-danger" type="submit">
-                                        <i class="bi bi-trash"></i> Sterge
+                                    <button class="btn btn-danger custom-button" type="submit">
+                                        <i class="bi bi-trash"></i> Șterge
                                     </button>
                                 </form>
                             </div>
@@ -63,33 +128,21 @@
     </div>
 </div>
 
-<br />
-<br />
-
-@* Afisare camere impreuna cu butoanele de editare si stergere *@
-
 
 @if (ViewBag.EsteAdmin)
-
 {
-<div>
-
-    <a class="btn btn-outline-primary" href="/Camere/New"><i class="bi bi-pencil-square"></i>Adauga o camera noua</a>
-
-</div>
+    <div>
+        <a class="btn btn-outline-primary custom-button" href="/Camere/New"><i class="bi bi-pencil-square"></i>Adaugă o cameră nouă</a>
+    </div>
 }
 
 
 
-
-
-
-
-
-<br />
 <br />
 
 @* Afisare reviews impreuna cu butoanele de editare si stergere *@
+
+<h4 class="text-center mb-4 custom-header">Spune-ne părerea ta!</h4>
 
 @foreach (var review in Model.ListaReviews)
 {
@@ -100,11 +153,11 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">@review.Titlu</h4>
-                        <p class="card-text">@review.Continut</p>
+                        <h4 class="card-title custom-text">@review.Titlu</h4>
+                        <p class="card-text custom-text">@review.Continut</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <strong><i class="bi bi-person"></i>@review.User.Nume @review.User.Prenume</strong>
+                                <strong><i class="bi bi-person custom-text"></i>@review.User.Nume @review.User.Prenume</strong>
                             </div>
                             <div class="d-flex align-items-center">
                                 @for (var i = 1; i <= review.Rating; i++)
@@ -121,9 +174,9 @@
                     @if (review.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
                     {
                         <div class="card-footer d-flex justify-content-between">
-                            <a class="btn btn-outline-primary" href="/Reviews/Edit/@review.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                            <a class="btn btn-outline-primary custom-button" href="/Reviews/Edit/@review.Id"><i class="bi bi-pencil-square"></i>Editează</a>
                             <form method="post" action="/Reviews/Delete/@review.Id">
-                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+                                <button class="btn btn-outline-danger custom-button" type="submit"><i class="bi bi-trash"></i>Șterge</button>
                             </form>
                         </div>
                     }
@@ -132,9 +185,7 @@
             </div>
 
             <div class="col-md-2"></div>
-
         </div>
-
     </div>
 }
 
@@ -148,21 +199,21 @@
                     <div class="card-body">
                         <input type="hidden" name="HotelId" value="@Model.Id" />
 
-                        <div class="form-group">
-                            <label for="titlu">Titlu review</label>
-                            <textarea class="form-control" id="titlu" name="Titlu"></textarea>
+                        <div class="form-group custom-text">
+                            <label for="titlu">Subiect:</label>
+                            <textarea class="form-control custom-textbox" id="titlu" name="Titlu"></textarea>
                             @Html.ValidationMessage("Titlu", null, new { @class = "text-danger"})
                         </div>
-
-                        <div class="form-group">
-                            <label for="continut">Continut</label>
-                            <textarea class="form-control" id="continut" name="Continut"></textarea>
+                        <br />
+                        <div class="form-group custom-text">
+                            <label for="continut">Conținut:</label>
+                            <textarea class="form-control custom-textbox" id="continut" name="Continut"></textarea>
                             @Html.ValidationMessage("Continut", null, new { @class = "text-danger"})
                         </div>
-
-                        <div class="form-group">
+                        <br />
+                        <div class="form-group custom-text">
                             <label for="rating">
-                                Rating-ul dumneavoastra: <span style="font-weight:normal;">(1 stea - nu sunt deloc multumit, 5 stele - sunt foarte multumit)</span>
+                                Rating-ul dumneavoastră: <span style="font-weight:normal;">(1 stea - nu sunt deloc mulțumit, 5 stele - sunt foarte mulțumit)</span>
                             </label>
                             <div onmouseout="CRateSelected()">
                                 <span class="starFade" id="Rate1" onclick="CRate(1)" onmouseover="CRateOver(1)" onmouseout="CRateOut(1)"></span>
@@ -174,11 +225,11 @@
                             <input type="hidden" name="Rating" id="Rating" value="0" />
                             @Html.ValidationMessage("Rating", null, new { @class = "text-danger"})
                         </div>
-
+                        <br />
                         <input type="hidden" name="HotelId" value="@ViewBag.HotelId" />
 
-                        <div class="form-group">
-                            <button class="btn btn-success " type="submit">Adauga review-ul</button>
+                        <div class="form-group custom-text">
+                            <button class="btn btn-success custom-button" type="submit">Adaugă review-ul</button>
                         </div>
 
                     </div>
@@ -188,6 +239,7 @@
         <div class="col-md-2"></div>
     </div>
 </div>
+
 
 
 <script>

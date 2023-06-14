@@ -96,7 +96,7 @@ namespace MDS.Controllers
             return View(hotel);
         }
         [HttpPost]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Agent,Admin")]
         public IActionResult Show([FromForm] Review rev)
         {
              
@@ -153,7 +153,7 @@ namespace MDS.Controllers
             db.SaveChanges();
            
 
-            TempData["message"] = "Hotelul a fost adaugat";
+            TempData["message"] = "Hotelul a fost adăugat";
             return RedirectToAction("Show", "Hoteluri", new { id = bm.Id });
 
         }
@@ -173,7 +173,7 @@ namespace MDS.Controllers
             }
             else
             {
-                TempData["message"] = "Nu puteti edita acest hotel";
+                TempData["message"] = "Nu puteți edita acest hotel";
                 //return RedirectToAction("Index");
                 return View(hotel);
             }
@@ -208,7 +208,7 @@ namespace MDS.Controllers
                 }
                 else
                 {
-                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui hotel care nu va apartine";
+                    TempData["message"] = "Nu aveți dreptul să faceți modificări asupra unui hotel care nu vă aparține";
                     return RedirectToAction("Index", "Tari");
 
                 }
@@ -237,12 +237,12 @@ namespace MDS.Controllers
                 // Delete the hotel record
                 db.ListaHoteluri.Remove(hotel);
                 db.SaveChanges();
-                TempData["message"] = "Hotelul a fost sters";
+                TempData["message"] = "Hotelul a fost șters";
                 return RedirectToAction("Index","Hoteluri");
             }
             else
             {
-                TempData["message"] = "Nu puteti sterge acest hotel";
+                TempData["message"] = "Nu puteți șterge acest hotel";
                 return RedirectToAction("Index", "Hoteluri");
             }
         }
@@ -279,15 +279,12 @@ namespace MDS.Controllers
 
         public IActionResult CautareHoteluri(List<string> selectedFilters)
         {
-            ViewBag.Message = null;
+
             List<string> filterOptions = new List<string>
     {
-        "AC",
-        "Mic Dejun",
-        "Cina",
-        "Balcon",
-        "Cada",
-        "Room Service"
+        "Filter1",
+        "Filter2",
+        "Filter3"
     };
 
             ViewBag.FilterOptions = filterOptions;
@@ -305,18 +302,11 @@ namespace MDS.Controllers
             var hotelsWithAvailableRooms = new List<Hotel>();
             if (Convert.ToString(HttpContext.Request.Query["checkinDate"]) != null && Convert.ToString(HttpContext.Request.Query["checkoutDate"]) != null)
             {
-                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "" && HttpContext.Request.Query["numPersons"]!="" && HttpContext.Request.Query["country"] != "")
+                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "")
                 {
 
                     DateTime checkinDate = DateTime.Parse(HttpContext.Request.Query["checkinDate"]);
                     DateTime checkoutDate = DateTime.Parse(HttpContext.Request.Query["checkoutDate"]);
-
-
-                    TimeSpan zile = checkoutDate -checkinDate;
-                    int nrzile = (int)zile.TotalDays;
-                    if (nrzile == 0)
-                        nrzile = 1;
-                    ViewBag.Nrzile = nrzile;
 
                     ViewBag.In = checkinDate;
                     ViewBag.Out = checkoutDate;
@@ -356,19 +346,15 @@ namespace MDS.Controllers
 
                 else
                     {
-                    TempData["message"] = "Toate campurile sunt obligatorii";
-                    ViewBag.Message = TempData["message"].ToString();
-                    //return RedirectToAction("CautareHoteluri");
-                    
-
-                }
-
+                        TempData["message"] = "Toate câmpurile sunt obligatorii";
+                        ViewBag.Mesaj = TempData["message"];
+                        return RedirectToAction("CautareHoteluri");
+                    }
+                
             }
-
-
-            ViewBag.CheckinDate = DateTime.Now.ToString("yyyy-MM-dd");
-            ViewBag.CheckoutDate =  DateTime.Now.ToString("yyyy-MM-dd");
-            ;
+           
+            ViewBag.CheckinDate = "2023-05-05";
+            ViewBag.CheckoutDate = "2023-05-05";
             ViewBag.NumPersons = "";
             ViewBag.Hoteluri = hotelsWithAvailableRooms;
 

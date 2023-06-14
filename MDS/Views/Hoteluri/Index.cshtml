@@ -1,20 +1,69 @@
 ﻿@model MDS.Models.Hotel
 
 @{
-ViewBag.Title = "Index";
+    ViewBag.Title = "Index";
 }
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        .custom-button:hover {
+            background-color: #1a8cff;
+            color: #000000;
+            border-color: #1a8cff;
+        }
+
+        .custom-textbox {
+            font-family: 'Lobster', cursive;
+            background-color: #cce6ff;
+            border: 1px solid #0080ff;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
 
 @if (ViewBag.Message != null)
 {
-<h2 class="alert alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+    <h2 class="alert alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
+
 <section id="pinBoot">
-@foreach (MDS.Models.Hotel hotel in ViewBag.Hoteluri)
-{   
-            <article class="white-panel" onclick="location.href='/Hoteluri/Show/@hotel.Id'">
-            <h3 class="card-title text-success py-3 px-3 rounded-2">@hotel.Nume</h3>
-            <div><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
-            <div><i class="bi bi-geo-alt-fill"></i> @hotel.Locatie</div>
+    @foreach (MDS.Models.Hotel hotel in ViewBag.Hoteluri)
+    {
+        <article class="white-panel" onclick="location.href='/Hoteluri/Show/@hotel.Id'">
+            <h3 class="card-title py-3 px-3 rounded-2 custom-header">@hotel.Nume</h3>
+            <div class="custom-text"><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
+            <div class="custom-text"><i class="bi bi-geo-alt-fill"></i> @hotel.Locatie</div>
+            <br>
             @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
             {
                 <span class="starGlow"></span>
@@ -23,8 +72,6 @@ ViewBag.Title = "Index";
             {
                 <span class="starFade"></span>
             }
- 
-
         </article>
     }
 </section>

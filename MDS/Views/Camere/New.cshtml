@@ -1,38 +1,67 @@
 ﻿@model MDS.Models.Camera
 
 
-<h2 class="text-center mt-5">Adaugare Camera</h2>
-<br />
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+        
+    </style>
+</head>
+
+<h2 class="text-center mt-5 custom-header">Adaugă o cameră</h2>
+
 <div class="container mt-5">
     <div class="row">
         <div class="col-6 offset-3">
             <form method="post" action="/Camere/New">
 
-                @Html.Label("Nume", "Nume Camera")
+                @Html.Label("Nume", "Nume")
                 <br />
                 @Html.TextBox("Nume", null, new { @class = "form-control" })
-                <br /><br />
+                <br />
 
-                @Html.Label("Capacitate", "Capacitate Camera")
+                @Html.Label("Capacitate", "Capacitate")
                 <br />
                 @Html.TextBox("Capacitate", null, new { @class = "form-control" })
-
-                @Html.Label("Descriere", "Descriere Camera")
+                <br />
+                @Html.Label("Descriere", "Descriere")
                 <br />
                 @Html.TextArea("Descriere", null, new { @class = "summernote" })
-
-                @Html.Label("PretNoapte", "Tarfiul Camerei")
+                <br />
+                @Html.Label("PretNoapte", "Tarif")
                 <br />
                 @Html.TextBox("PretNoapte", null, new { @class = "form-control" })
 
-                <br /><br />
-
-                <label>Selectati hotelul</label>
-                @Html.DropDownListFor(m => m.HotelId, new SelectList(Model.Hoteluri, "Value", "Text"),
-                "Selectati hotelul", new { @class = "form-control" })
                 <br />
 
-                <button class="btn btn-success" type="submit">Adauga Camera</button>
+                <label>Selectați hotelul</label>
+                @Html.DropDownListFor(m => m.HotelId, new SelectList(Model.Hoteluri, "Value", "Text"),
+                "Selectați hotelul", new { @class = "form-control" })
+                <br />
+
+                <button class="btn btn-success custom-button" type="submit">Adaugă camera</button>
 
             </form>
         </div>

@@ -1,6 +1,33 @@
 ﻿@model MDS.Models.Rezervare
 
-<h1>Edit Reservation</h1>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+    </style>
+</head>
+
+<h2 class="text-center mt-5 custom-header">Editează rezervarea</h2>
 
 @using (Html.BeginForm("Edit", "Rezervari", new { id = Model.Id }, FormMethod.Post))
 {
@@ -23,12 +50,12 @@
         @Html.EditorFor(model => model.ListaClienti, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.ListaClienti, "", new { @class = "text-danger" })
     </div>
-
+    <br />
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
+        <input type="submit" value="Aplică modificările" class="btn btn-primary custom-button" />
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
+<br />
+<div >
+    @Html.ActionLink("Înapoi la listă", "Index")
 </div>
