@@ -96,7 +96,7 @@ namespace MDS.Controllers
             return View(hotel);
         }
         [HttpPost]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Agent,Admin")]
         public IActionResult Show([FromForm] Review rev)
         {
              
@@ -153,7 +153,7 @@ namespace MDS.Controllers
             db.SaveChanges();
            
 
-            TempData["message"] = "Hotelul a fost adaugat";
+            TempData["message"] = "Hotelul a fost adăugat";
             return RedirectToAction("Show", "Hoteluri", new { id = bm.Id });
 
         }
@@ -173,7 +173,7 @@ namespace MDS.Controllers
             }
             else
             {
-                TempData["message"] = "Nu puteti edita acest hotel";
+                TempData["message"] = "Nu puteți edita acest hotel";
                 //return RedirectToAction("Index");
                 return View(hotel);
             }
@@ -208,7 +208,7 @@ namespace MDS.Controllers
                 }
                 else
                 {
-                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui hotel care nu va apartine";
+                    TempData["message"] = "Nu aveți dreptul să faceți modificări asupra unui hotel care nu vă aparține";
                     return RedirectToAction("Index", "Tari");
 
                 }
@@ -237,12 +237,12 @@ namespace MDS.Controllers
                 // Delete the hotel record
                 db.ListaHoteluri.Remove(hotel);
                 db.SaveChanges();
-                TempData["message"] = "Hotelul a fost sters";
+                TempData["message"] = "Hotelul a fost șters";
                 return RedirectToAction("Index","Hoteluri");
             }
             else
             {
-                TempData["message"] = "Nu puteti sterge acest hotel";
+                TempData["message"] = "Nu puteți șterge acest hotel";
                 return RedirectToAction("Index", "Hoteluri");
             }
         }
@@ -346,7 +346,7 @@ namespace MDS.Controllers
 
                 else
                     {
-                        TempData["message"] = "Toate campurile sunt obligatorii";
+                        TempData["message"] = "Toate câmpurile sunt obligatorii";
                         ViewBag.Mesaj = TempData["message"];
                         return RedirectToAction("CautareHoteluri");
                     }

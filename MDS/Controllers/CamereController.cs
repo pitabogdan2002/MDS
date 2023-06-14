@@ -89,7 +89,7 @@ namespace MDS.Controllers
             {
                 db.ListaCamere.Add(cm);
                 db.SaveChanges();
-                TempData["message"] = "Camera a fost adaugata";
+                TempData["message"] = "Camera a fost adăugată";
                 return Redirect("/Hoteluri/Show/"+cm.Hotel.Id);
             }
 
@@ -117,7 +117,7 @@ namespace MDS.Controllers
             }
             else
             {
-                TempData["message"] = "Nu puteti edita aceasta camera deoarece nu va apartine";
+                TempData["message"] = "Nu puteți edita această cameră deoarece nu vă aparține";
                 //return RedirectToAction("Index");
                 return View(camera);
             }
@@ -138,7 +138,7 @@ namespace MDS.Controllers
                 cam.Capacitate= requestCamera.Capacitate;
                 cam.Descriere = requestCamera.Descriere;
                 db.SaveChanges();
-                TempData["message"] = "Camera a fost modificata!";
+                TempData["message"] = "Camera a fost modificată";
                 return RedirectToAction("Show", "Camere", new { id = id });
             }
             catch (Exception e)
@@ -146,8 +146,6 @@ namespace MDS.Controllers
                 return View(requestCamera);
             }
         }
-
-
 
 
 
@@ -163,13 +161,13 @@ namespace MDS.Controllers
             { 
                 db.ListaCamere.Remove(camera);
                 db.SaveChanges();
-                TempData["message"] = "Camera a fost stearsa";
+                TempData["message"] = "Camera a fost ștearsă";
                 return RedirectToAction("Show","Hoteluri", new {id = camera.Hotel.Id});
                 //return View();
             }
             else
             {
-                TempData["message"] = "Nu aveti dreptul sa stergeti acesta camera";
+                TempData["message"] = "Nu aveți dreptul să ștergeți acestă cameră";
                 return RedirectToAction("Show", "Hoteluri", new { id = camera.Hotel.Id });
                 //return View();
             }
@@ -187,6 +185,7 @@ namespace MDS.Controllers
             }
 
             ViewBag.EsteAdmin = User.IsInRole("Admin");
+            ViewBag.EsteAgent = User.IsInRole("Agent");
 
             ViewBag.UserCurent = _userManager.GetUserId(User);
         }

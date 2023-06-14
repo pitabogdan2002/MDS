@@ -63,7 +63,7 @@ namespace MDS.Controllers
 
             else
             {
-                TempData["message"] = "Nu aveti dreptul sa stergeti review-ul";
+                TempData["message"] = "Nu aveți dreptul să ștergeți review-ul";
                 return RedirectToAction("Index", "Tari");
             }
         }
@@ -82,7 +82,7 @@ namespace MDS.Controllers
 
             else
             {
-                TempData["message"] = "Nu aveti dreptul sa editati review-ul";
+                TempData["message"] = "Nu aveți dreptul să editați review-ul";
                 return RedirectToAction("Index", "Tari");
             }
         }
@@ -109,7 +109,7 @@ namespace MDS.Controllers
                 }
                 else
                 {
-                    TempData["message"] = "Nu aveti dreptul sa faceti modificari";
+                    TempData["message"] = "Nu aveți dreptul să faceți modificări";
                     return RedirectToAction("Show","Hoteluri", new {id = rev.Hotel.Id} );
                 }
             }

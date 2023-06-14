@@ -4,19 +4,52 @@
     ViewData["Title"] = "New";
 }
 
-<h1>New Tara</h1>
 
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+    </style>
+</head>
+
+<h2 class="custom-header">Adaugă o Țară</h2>
+
+<br />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="New">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Nume" class="control-label"></label>
+                <label asp-for="Nume" class="control-label custom-text"></label>
                 <input asp-for="Nume" class="form-control" />
                 <span asp-validation-for="Nume" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary custom-button">Adaugă</button>
             </div>
         </form>
     </div>

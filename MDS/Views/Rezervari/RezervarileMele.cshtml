@@ -2,7 +2,59 @@
     ViewBag.Title = "RezervarileMele";
 }
 
-<h2 class="text-center mb-4">Toate Rezervari</h2>
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+        .custom-textbox {
+            font-family: 'Lobster', cursive;
+            background-color: #cce6ff;
+            border: 1px solid #0080ff;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+            .custom-textbox::placeholder {
+                color: #1a8cff;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+    </style>
+</head>
+
+<h2 class="text-center mb-4 custom-header">Toate Rezervările</h2>
 @if (ViewBag.Message != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -17,17 +69,17 @@
         <article class="col">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">@Html.Raw(reservation.ListaClienti)</h5>
-                    <p class="card-text"><strong>Check-in:</strong> @Html.Raw(reservation.CheckIn)</p>
-                    <p class="card-text"><strong>Check-out:</strong> @Html.Raw(reservation.CheckOut)</p>
-                    <p class="card-text"><strong>Client Id:</strong> @Html.Raw(reservation.UserId)</p>
-                    <p class="card-text"><strong>User Name:</strong>  @ViewBag.UserName</p>
+                    <h5 class="card-title custom-header">@Html.Raw(reservation.ListaClienti)</h5>
+                    <p class="card-text custom-text"><strong>Check-in:</strong> @Html.Raw(reservation.CheckIn)</p>
+                    <p class="card-text custom-text"><strong>Check-out:</strong> @Html.Raw(reservation.CheckOut)</p>
+                    <p class="card-text custom-text"><strong>Client Id:</strong> @Html.Raw(reservation.UserId)</p>
+                    <p class="card-text custom-text"><strong>User Name:</strong>  @ViewBag.UserName</p>
 
 
 
                 </div>
                 <div class="card-footer text-center">
-                    <a href="/Rezervari/Show/@reservation.Id" class="btn btn-primary">Details</a>
+                    <a href="/Rezervari/Show/@reservation.Id" class="btn custom-button">Detalii</a>
                 </div>
             </div>
         </article>

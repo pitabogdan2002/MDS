@@ -3,7 +3,42 @@
     ViewBag.Title = "Rezervari";
     var currentDate = DateTime.Now.Date;
 }
-<h1>Rezervare Noua</h1>
+
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+
+        .hidden-element {
+            display: none;
+        }
+    </style>
+</head>
+
+
+<h2 class="text-center mt-5 custom-header">Adaugă o rezervare</h2>
+
 
 @using (Html.BeginForm("New", "Rezervari", new { id = Model.Id }, FormMethod.Post))
 {
@@ -15,7 +50,7 @@
         </div>
     }
 
-    @Html.Label("CameraId", "Camera aleasa:", new { @class = "hidden-element" })
+    @Html.Label("CameraId", "Camera aleasă:", new { @class = "hidden-element" })
     <br />
     @Html.TextBox("CameraId", Model.CameraId, new { @class = "form-control hidden-element" })
 
@@ -41,7 +76,7 @@
     </div>
 
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
+        <input type="submit" value="Adaugă rezervarea" class="btn btn-primary custom-button" />
     </div>
 }
 
@@ -49,9 +84,3 @@
     @Html.ActionLink("Toate rezervarile mele", "RezervarileMele")
 </div>
 
-<style>
-    .hidden-element {
-        display: none;
-    }
-
-    </

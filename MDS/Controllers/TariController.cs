@@ -31,7 +31,7 @@ namespace MDS.Controllers
             _roleManager = roleManager;
         }
 
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Agent,Admin")]
 
         public IActionResult Index()
         {
@@ -43,7 +43,7 @@ namespace MDS.Controllers
 
             if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
             {
-                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
+                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); 
                 List<int> tariid = db.ListaTari.Where(t => t.Nume.Contains(search))
                     .Select(a => a.Id).ToList();
                 tari = db.ListaTari.Where(t => tariid.Contains(t.Id)).ToList();
@@ -69,7 +69,7 @@ namespace MDS.Controllers
             {
                 if (totalItems == 0)
                 {
-                    TempData["message"] = "Nu s-a gasit tara care contine cuvantul :" + search;
+                    TempData["message"] = "Nu s-a găsit țara care conține cuvântul: " + search;
                     return RedirectToAction("Index");
                 }
 
@@ -84,12 +84,12 @@ namespace MDS.Controllers
         }
 
 
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Agent,Admin")]
         public IActionResult Show(int id)
         {
             SetAccessRights();
 
-            if (User.IsInRole("User") || User.IsInRole("Admin"))
+            if (User.IsInRole("User") || User.IsInRole("Agent") || User.IsInRole("Admin"))
             {
                 var tara = db.ListaTari.Where(t => t.Id == id).FirstOrDefault();
       
@@ -97,7 +97,7 @@ namespace MDS.Controllers
 
                 if (tara.ListaHoteluri.Count == 0)
                 {
-                    TempData["message"] = "Nu exista hoteluri pentru tara selectata";
+                    TempData["message"] = "Nu există hoteluri pentru țara selectată";
                     return RedirectToAction("Index", "Tari");
                 }
 
@@ -107,13 +107,13 @@ namespace MDS.Controllers
             }
             else
             {
-                TempData["message"] = "Nu aveti drepturi";
+                TempData["message"] = "Nu aveți drepturi";
                 return RedirectToAction("Index", "Tari");
             }
         }
 
 
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult New()
         {
 
@@ -121,7 +121,7 @@ namespace MDS.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult New(Tara tr)
         {
             tr.UserId = _userManager.GetUserId(User);
@@ -130,7 +130,7 @@ namespace MDS.Controllers
             {
                 db.ListaTari.Add(tr);
                 db.SaveChanges();
-                TempData["message"] = "Tara a fost adaugata";
+                TempData["message"] = "Țara a fost adăugată";
                 return RedirectToAction("Index");
             }
 
@@ -157,7 +157,7 @@ namespace MDS.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             Tara tara = db.ListaTari.Where(art => art.Id == id)
@@ -167,13 +167,13 @@ namespace MDS.Controllers
             {
                 db.ListaTari.Remove(tara);
                 db.SaveChanges();
-                TempData["message"] = "Tara a fost stearsa";
+                TempData["message"] = "Țara a fost ștearsă";
                 return RedirectToAction("Index");
             }
 
             else
             {
-                TempData["message"] = "Nu aveti dreptul sa stergeti o tara";
+                TempData["message"] = "Nu aveți dreptul să ștergeți o țară";
                 return RedirectToAction("Index");
             }
         }
@@ -191,7 +191,7 @@ namespace MDS.Controllers
             }
             else
             {
-                TempData["message"] = "Nu puteti edita aceasta tara";
+                TempData["message"] = "Nu puteți edita această țară";
                 return View(tara);
             }
 

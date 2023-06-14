@@ -1,5 +1,58 @@
 ﻿@model MDS.Models.Tara
-<h2>Afisare Hoteluri</h2>
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+            
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+        .custom-textbox {
+            font-family: 'Lobster', cursive;
+            background-color: #cce6ff;
+            border: 1px solid #0080ff;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+
+
+    </style>
+</head>
+
+<h2 class ="text-center mb-4 custom-header">Alege hotelul dorit!</h2>
+
 @if (ViewBag.Message != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -7,13 +60,15 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+
 <section id="pinBoot">
     @foreach (var hotel in Model.ListaHoteluri)
     {
-                <article class="white-panel" onclick="location.href='/Hoteluri/Show/@hotel.Id'">
-            <h4>@Html.Raw(hotel.Nume)</h4>
-            <p>@Html.Raw(hotel.Facilitati)</p>
-            <p>@Html.Raw(hotel.Locatie)</p>
+        <article class="white-panel" onclick="location.href='/Hoteluri/Show/@hotel.Id'">
+            <h4 class="text-center custom-header">@Html.Raw(hotel.Nume)</h4>
+            <br>
+            <p class="custom-text">@Html.Raw(hotel.Facilitati)</p>
+            <p class="custom-text">@Html.Raw(hotel.Locatie)</p>
             <div>
                 @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
                 {
@@ -23,11 +78,7 @@
                 {
                     <span class="starFade"></span>
                 }
-
-              </div>
-
-
-
-                    </article>
+            </div>
+        </article>
     }
-</section> 
+</section>

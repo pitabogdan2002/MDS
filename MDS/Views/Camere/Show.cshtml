@@ -1,75 +1,96 @@
-﻿@model MDS.Models.Camera
+﻿<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+        .custom-textbox {
+            font-family: 'Lobster', cursive;
+            background-color: #cce6ff;
+            border: 1px solid #0080ff;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
 @if (ViewBag.Message != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-dismissible custom-text fade show" role="alert">
         <strong>@ViewBag.Message</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 <div class="card mb-5">
-
     <div class="card-body">
+        <h3 class="card-title py-3 px-3 rounded-2 custom-header">@Model.Nume</h3>
 
-        <h3 class="card-title alert-success py-3 px-3 rounded-2">@Model.Nume</h3>
+        <div class="card-text font-weight-bold mt-4 custom-text">Descriere:</div>
+        <p class="card-text mb-3 custom-text">@Html.Raw(Model.Descriere)</p>
 
-        <p class="card-text mb-3">@Html.Raw(Model.Descriere)</p>
+        <div class="card-text font-weight-bold mt-4 custom-text">Capacitate: @Model.Capacitate</div>
 
-        <div class="d-flex justify-content-between mb-3">
-            <div class="font-weight-bold">Capacitate:</div>
-            <div>@Model.Capacitate</div>
-        </div>
+        <div class="card-text font-weight-bold mt-4 custom-text">Preț pe noapte: @Model.PretNoapte</div>
 
-        <div class="d-flex justify-content-between mb-3">
-            <div class="font-weight-bold">Pret pe noapte:</div>
-            <div>@Model.PretNoapte</div>
-        </div>
-
-        <div class="d-flex justify-content-between mb-3">
-            <div class="font-weight-bold">Hotel:</div>
-            <div><i class="bi bi-globe"></i> @Model.Hotel.Nume</div>
-        </div>
-
+        <div class="card-text font-weight-bold mt-4 custom-text"><i class="bi bi-globe"></i> @Model.Hotel.Nume</div>
+        
+        <br />
         <div class="d-flex justify-content-between">
-            <a class="btn btn-primary" href="/Camere/Edit/@Model.Id"><i class="bi bi-pencil-square"></i> Editeaza</a>
-            
-            <a class="btn btn-primary" href="/Rezervari/New/@Model.Id"><i class="bi bi-pencil-square"></i> Rezerva</a>
-
+            <a class="btn btn-danger custom-button" href="/Camere/Edit/@Model.Id"><i class="bi bi-pencil-square"></i> Editează</a>
+            <a class="btn btn-danger custom-button" href="/Rezervari/New/@Model.Id"><i class="bi bi-pencil-square"></i> Rezervă</a>
             <form method="post" action="/Camere/Delete/@Model.Id">
-                <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i> Sterge</button>
+                <button class="btn btn-danger custom-button" type="submit"><i class="bi bi-trash"></i> Șterge</button>
             </form>
         </div>
-
     </div>
-
-
+    @*
     @foreach (var rez in Model.ListaRezervari)
     {
         <div class="container">
             <div class="row">
                 <div class="col-md-2"></div>
-
                 <div class="col-md-8">
-
                     <div>
-
-                        <p>@rez.CheckIn</p>
-                        <small>@rez.CheckOut</small>
-                        @*<strong> <i class="bi bi-person"></i>class@rez.User.UserName</strong>*@
-
+                        <p class="custom-text">@rez.CheckIn</p>
+                        <small class="custom-text">@rez.CheckOut</small>
+                        @*<strong> <i class="bi bi-person"></i>class@rez.User.UserName</strong>* @
                     </div>
                     <br>
-
-                    
-
                     <br />
-
                 </div>
-
                 <div class="col-md-2"></div>
-
             </div>
-
         </div>
     }
+    *@
 </div>
-
