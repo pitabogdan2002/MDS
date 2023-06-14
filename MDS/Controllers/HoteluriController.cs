@@ -16,7 +16,7 @@ namespace MDS.Controllers
     [Authorize]
     public class HoteluriController : Controller
     {
-        private Dictionary<Hotel, List<Camera>> availableRoomsByHotel ;
+        private Dictionary<Hotel, List<Camera>> availableRoomsByHotel;
 
         private readonly ApplicationDbContext db;
 
@@ -42,7 +42,7 @@ namespace MDS.Controllers
 
         public ActionResult Index()
         {
-               if (TempData.ContainsKey("message"))
+            if (TempData.ContainsKey("message"))
             {
                 ViewBag.message = TempData["message"].ToString();
             }
@@ -99,7 +99,7 @@ namespace MDS.Controllers
         [Authorize(Roles = "User,Agent,Admin")]
         public IActionResult Show([FromForm] Review rev)
         {
-             
+
             rev.UserId = _userManager.GetUserId(User);
 
 
@@ -151,14 +151,14 @@ namespace MDS.Controllers
             bm.UserId = _userManager.GetUserId(User);
             db.ListaHoteluri.Add(bm);
             db.SaveChanges();
-           
 
-            TempData["message"] = "Hotelul a fost adăugat";
+
+            TempData["message"] = "Hotelul a fost adaugat";
             return RedirectToAction("Show", "Hoteluri", new { id = bm.Id });
 
         }
 
- 
+
         [Authorize(Roles = "Agent,Admin")]
         public ActionResult Edit(int id)
         {
@@ -173,7 +173,7 @@ namespace MDS.Controllers
             }
             else
             {
-                TempData["message"] = "Nu puteți edita acest hotel";
+                TempData["message"] = "Nu puteti edita acest hotel";
                 //return RedirectToAction("Index");
                 return View(hotel);
             }
@@ -188,7 +188,7 @@ namespace MDS.Controllers
 
 
             try
-            { 
+            {
                 if (h.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
                 {
                     h.Nume = requestArticle.Nume;
@@ -197,10 +197,10 @@ namespace MDS.Controllers
                     requestArticle.Facilitati = sanitizer.Sanitize(requestArticle.Facilitati);
 
                     h.Facilitati = requestArticle.Facilitati;
-                     
+
 
                     h.TaraId = requestArticle.TaraId;
-                    
+
                     db.SaveChanges();
                     TempData["message"] = "Hotelul a fost modificat";
                     return RedirectToAction("Show", "Hoteluri", new { id = id });
@@ -208,7 +208,7 @@ namespace MDS.Controllers
                 }
                 else
                 {
-                    TempData["message"] = "Nu aveți dreptul să faceți modificări asupra unui hotel care nu vă aparține";
+                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui hotel care nu va apartine";
                     return RedirectToAction("Index", "Tari");
 
                 }
@@ -229,20 +229,19 @@ namespace MDS.Controllers
 
             if (hotel.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
-                var c = db.ListaCamere.Where(c => c.Hotel == hotel).First();
+                var c = db.ListaCamere.Where(c => c.Hotel == hotel).FirstOrDefault();
                 var r = db.ListaReviews.Where(r => r.HotelId == hotel.Id).ToList();
-                var rezervari = db.ListaRezervari.Where(r => r.CameraId == c.Id).ToList();
-                db.ListaRezervari.RemoveRange(rezervari);
-                db.ListaReviews.RemoveRange(r);
+                if (r != null)
+                { db.ListaReviews.RemoveRange(r); }
                 // Delete the hotel record
                 db.ListaHoteluri.Remove(hotel);
                 db.SaveChanges();
-                TempData["message"] = "Hotelul a fost șters";
-                return RedirectToAction("Index","Hoteluri");
+                TempData["message"] = "Hotelul a fost sters";
+                return RedirectToAction("Index", "Hoteluri");
             }
             else
             {
-                TempData["message"] = "Nu puteți șterge acest hotel";
+                TempData["message"] = "Nu puteti sterge acest hotel";
                 return RedirectToAction("Index", "Hoteluri");
             }
         }
@@ -267,7 +266,7 @@ namespace MDS.Controllers
 
             return selectList;
         }
-        
+
         private void SetAccessRights()
         {
             ViewBag.AfisareButoane = false;
@@ -279,12 +278,15 @@ namespace MDS.Controllers
 
         public IActionResult CautareHoteluri(List<string> selectedFilters)
         {
-
+            ViewBag.Message = null;
             List<string> filterOptions = new List<string>
     {
-        "Filter1",
-        "Filter2",
-        "Filter3"
+        "AC",
+        "Mic Dejun",
+        "Cina",
+        "Balcon",
+        "Cada",
+        "Room Service"
     };
 
             ViewBag.FilterOptions = filterOptions;
@@ -302,11 +304,18 @@ namespace MDS.Controllers
             var hotelsWithAvailableRooms = new List<Hotel>();
             if (Convert.ToString(HttpContext.Request.Query["checkinDate"]) != null && Convert.ToString(HttpContext.Request.Query["checkoutDate"]) != null)
             {
-                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "")
+                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "" && HttpContext.Request.Query["numPersons"] != "" && HttpContext.Request.Query["country"] != "")
                 {
 
                     DateTime checkinDate = DateTime.Parse(HttpContext.Request.Query["checkinDate"]);
                     DateTime checkoutDate = DateTime.Parse(HttpContext.Request.Query["checkoutDate"]);
+
+
+                    TimeSpan zile = checkoutDate - checkinDate;
+                    int nrzile = (int)zile.TotalDays;
+                    if (nrzile == 0)
+                        nrzile = 1;
+                    ViewBag.Nrzile = nrzile;
 
                     ViewBag.In = checkinDate;
                     ViewBag.Out = checkoutDate;
@@ -325,7 +334,7 @@ namespace MDS.Controllers
                         reservation.CameraId == room.Id &&
                          reservation.CheckIn <= checkinDate &&
                         reservation.CheckOut >= checkoutDate
-                    )  ).ToList();
+                    )).ToList();
 
                         if (selectedFilters != null && selectedFilters.Any())
                         {
@@ -340,21 +349,25 @@ namespace MDS.Controllers
                         availableRoomsByHotel.Add(hotel, availableRooms);
                     }
 
-                   ViewBag.CamereHoteluri =  availableRoomsByHotel;
+                    ViewBag.CamereHoteluri = availableRoomsByHotel;
 
                 }
 
                 else
-                    {
-                        TempData["message"] = "Toate câmpurile sunt obligatorii";
-                        ViewBag.Mesaj = TempData["message"];
-                        return RedirectToAction("CautareHoteluri");
-                    }
-                
+                {
+                    TempData["message"] = "Toate campurile sunt obligatorii";
+                    ViewBag.Message = TempData["message"].ToString();
+                    //return RedirectToAction("CautareHoteluri");
+
+
+                }
+
             }
-           
-            ViewBag.CheckinDate = "2023-05-05";
-            ViewBag.CheckoutDate = "2023-05-05";
+
+
+            ViewBag.CheckinDate = DateTime.Now.ToString("yyyy-MM-dd");
+            ViewBag.CheckoutDate = DateTime.Now.ToString("yyyy-MM-dd");
+            ;
             ViewBag.NumPersons = "";
             ViewBag.Hoteluri = hotelsWithAvailableRooms;
 
@@ -362,7 +375,7 @@ namespace MDS.Controllers
         }
 
 
-       
+
 
         private List<string> GetDesiredItemsOptions()
         {

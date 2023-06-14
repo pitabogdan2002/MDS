@@ -64,12 +64,13 @@
                 <br />
                 @Html.TextBox("Locatie", null, new { @class = "form-control" })
 
-
-                <br />
-                @Html.Label("Facilitati", "Facilități")
                 <br />
                 @Html.Label( "DAȚI ENTER DUPĂ FIECARE INSERARE DE IMAGINE/VIDEO"  )
                 <br />
+
+                <br />
+                @Html.Label("Facilitati", "Facilități")
+
                 @Html.TextArea("Facilitati", null, new { @class = "summernote" })
 
                 @Html.ValidationMessage("Facilitati", null, new { @class = "text-danger" })

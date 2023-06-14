@@ -174,9 +174,7 @@ namespace MDS.Controllers
 
                 TimeSpan zile = rez.CheckOut - rez.CheckIn;
                 int nrzile = (int)zile.TotalDays;
-                if (nrzile == 0)
-                    nrzile = 1;
-                rez.Suma = nrzile * camera.PretNoapte;
+                rez.Suma = (nrzile+1) * camera.PretNoapte;
 
                 db.ListaRezervari.Add(rez);
                 db.SaveChanges();
@@ -243,6 +241,17 @@ namespace MDS.Controllers
                 reservationToEdit.CheckIn = rez.CheckIn;
                 reservationToEdit.CheckOut = rez.CheckOut;
                 reservationToEdit.ListaClienti = rez.ListaClienti;
+
+                var camera = db.ListaCamere.Include("Hotel")
+                .Include("ListaRezervari")
+                .Include("ListaRezervari.User")
+                .Where(art => art.Id == reservationToEdit.CameraId)
+                .First();
+
+                TimeSpan zile = reservationToEdit.CheckOut - reservationToEdit.CheckIn;
+                int nrzile = (int)zile.TotalDays;
+                
+                reservationToEdit.Suma = (nrzile+1) * camera.PretNoapte;
 
                 // Se salveaza modificarile in baza de date
                 db.SaveChanges();

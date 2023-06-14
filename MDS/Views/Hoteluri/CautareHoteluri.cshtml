@@ -63,7 +63,7 @@
                                 <div>Capacitate camera: @camera.Capacitate</div>
                                 <div>Pret Total: @(ViewBag.Nrzile * camera.PretNoapte)</div>
                                 <div>Descriere: @camera.Descriere</div>
-                                <button class="book-button" onclick="location.href='/Rezervari/New'">Rezerva</button>
+                                <button class="book-button" onclick="location.href='/Rezervari/New/@camera.Id'">Rezerva</button>
                             </div>
                         }
                     }
