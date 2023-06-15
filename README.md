@@ -17,7 +17,7 @@ grupa 242
 
 [Link Demo](https://youtu.be/TXNqJDGsOgc)
 
-[Link Diagrama] (https://drive.google.com/file/d/18PXyDElgSDRy9ncKxb538-3kkto0WEC3/view?usp=sharing)
+[Link Diagrama](https://drive.google.com/file/d/18PXyDElgSDRy9ncKxb538-3kkto0WEC3/view?usp=sharing)
 
 ### MUST: (3p) logarea userilor cu diferite roluri  :heavy_check_mark:
 - (1p) login standard 
