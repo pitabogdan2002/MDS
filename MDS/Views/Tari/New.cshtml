@@ -22,7 +22,7 @@
             background-color: #3399ff;
             color: #ffffff;
             border: 2px solid #3399ff;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 16px;
         }
 
@@ -35,22 +35,23 @@
     </style>
 </head>
 
-<h2 class="custom-header">Adaugă o Țară</h2>
+<h2 class="text-center mt-5 custom-header">Adaugă o țară</h2>
 
-<br />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="New">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nume" class="control-label custom-text"></label>
-                <input asp-for="Nume" class="form-control" />
-                <span asp-validation-for="Nume" class="text-danger"></span>
-            </div>
-            <br />
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary custom-button">Adaugă</button>
-            </div>
-        </form>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form asp-action="New">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Nume" class="control-label"></label>
+                    <input asp-for="Nume" class="form-control" />
+                    <span asp-validation-for="Nume" class="text-danger"></span>
+                </div>
+                <br />
+                <div class=" text-center form-group">
+                    <button type="submit" class="btn btn-primary custom-button">Adaugă</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

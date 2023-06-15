@@ -15,7 +15,7 @@
             background-color: #3399ff;
             color: #ffffff;
             border: 2px solid #3399ff;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 16px;
         }
 
@@ -65,13 +65,24 @@
         <div class="card-text font-weight-bold mt-4 custom-text"><i class="bi bi-globe"></i> @Model.Hotel.Nume</div>
         
         <br />
-        <div class="d-flex justify-content-between">
-            <a class="btn btn-danger custom-button" href="/Camere/Edit/@Model.Id"><i class="bi bi-pencil-square"></i> Editează</a>
-            <a class="btn btn-danger custom-button" href="/Rezervari/New/@Model.Id"><i class="bi bi-pencil-square"></i> Rezervă</a>
-            <form method="post" action="/Camere/Delete/@Model.Id">
-                <button class="btn btn-danger custom-button" type="submit"><i class="bi bi-trash"></i> Șterge</button>
-            </form>
-        </div>
+
+        @if (ViewBag.AfisareButoane == true && Model.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteAgent)
+        {
+            <div class="d-flex justify-content-between">
+                <a class="btn btn-danger custom-button" href="/Camere/Edit/@Model.Id"><i class="bi bi-pencil-square"></i> Editează</a>
+                <a class="btn btn-danger custom-button" href="/Rezervari/New/@Model.Id"><i class="bi bi-pencil-square"></i> Rezervă</a>
+                <form method="post" action="/Camere/Delete/@Model.Id">
+                    <button class="btn btn-danger custom-button" type="submit"><i class="bi bi-trash"></i> Șterge</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex justify-content-between">
+                <a class="btn btn-danger custom-button" href="/Rezervari/New/@Model.Id"><i class="bi bi-pencil-square"></i> Rezervă</a>
+                
+            </div>
+        }
     </div>
     @*
     @foreach (var rez in Model.ListaRezervari)

@@ -20,7 +20,7 @@
             background-color: #3399ff;
             color: #ffffff;
             border: 2px solid #3399ff;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 16px;
         }
 
@@ -76,11 +76,13 @@
         @Html.ValidationMessageFor(model => model.ListaClienti, "", new { @class = "text-danger" })
     </div>
 
-    <div class="form-group">
-        <input type="submit" value="Adaugă rezervarea" class="btn btn-primary custom-button" />
+    <div class="form-group text-center">
+        <input type="submit" value="Adaugă" class="btn btn-primary custom-button" />
     </div>
 }
 
+@*
 <div>
     @Html.ActionLink("Toate rezervarile mele", "RezervarileMele")
 </div>
+*@

@@ -1,36 +1,109 @@
 ﻿@model MDS.Models.Hotel
 
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .custom-header {
+            font-family: 'Lobster', cursive;
+            color: #ff6600;
+        }
+
+        .custom-text {
+            font-family: 'Lobster', cursive;
+            color: #004d99;
+        }
+
+        .custom-button {
+            font-family: 'Lobster', cursive;
+            background-color: #3399ff;
+            color: #ffffff;
+            border: 2px solid #3399ff;
+            padding: 5px 10px;
+            font-size: 16px;
+        }
+
+            .custom-button:hover {
+                background-color: #1a8cff;
+                color: #000000;
+                border-color: #1a8cff;
+            }
+
+        .custom-textbox {
+            font-family: 'Lobster', cursive;
+            background-color: #cce6ff;
+            border: 1px solid #0080ff;
+            padding: 8px;
+            font-size: 14px;
+            color: #1a8cff;
+            width: 200px !important;
+        }
+
+            .custom-textbox::placeholder {
+                color: #1a8cff;
+            }
+
+        .container{
+            display: flex;
+            justify-content: center;
+        }
+
+        .custom-flex-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .custom-flex-item {
+            display: flex;
+            align-items: center;
+            margin-right: 55px;
+            margin-left: 55px;
+        }
+
+    </style>
+</head>
+
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
-    <div class="alert alert-info">
+    <div class="alert alert-info custom-text">
         @ViewBag.Message
     </div>
 }
-<h1> Cauta</h1>
+<h2 class="text-center mt-5 custom-header"> Caută hotelul perfect pentru tine!</h2>
+<br />
 <form method="GET">
     <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Select check-in date" id="checkinDate" name="checkinDate" value="@ViewBag.CheckinDate">
-        <input type="text" class="form-control" placeholder="Select check-out date" id="checkoutDate"name="checkoutDate" value="@ViewBag.CheckoutDate">
-        <select class="form-select" aria-label="Select country" name="country">
-            <option value="">Selecteaza tara</option>
+        <input type="text" class="form-control custom-textbox" placeholder="Check-in (yyyy-mm-dd)" id="checkinDate" name="checkinDate">
+        <input type="text" class="form-control custom-textbox" placeholder="Check-out (yyyy-mm-dd)" id="checkoutDate" name="checkoutDate">
+        <select class="form-select custom-textbox" aria-label="Țara" name="country">
+            <option value="" class="custom-textbox">Selectează țara</option>
             @foreach (var country in ViewBag.Countries)
             {
-                    <option value="@country.Nume">@country.Nume</option>
+                <option value="@country.Nume" class="custom-textbox">@country.Nume</option>
             }
         </select>
-        <input type="number" class="form-control" placeholder="Numar de persoane" name="numPersons" value="@ViewBag.NumPersons">
-        <button class="btn btn-outline-success" type="submit">Cauta</button>
+        <input type="number" class="form-control custom-textbox" placeholder="Număr de persoane" name="numPersons" value="@ViewBag.NumPersons">
+        
     </div>
-    @foreach (var item in ViewBag.FilterOptions)
-    {
-        <div>
-            <input type="checkbox" name="selectedFilters" value="@item" @(ViewBag.SelectedFilters.Contains(item) ? "checked" : "")>
-            <label>@item</label>
-        </div>
-    }
+    <br />
+    <label class="custom-header">Facilități dorite:</label>
+    <br /> <br />
+    <div class="custom-flex-container text-center">
+        @foreach (var item in ViewBag.FilterOptions)
+        {
+            <div class="custom-flex-item">
+                <input type="checkbox" name="selectedFilters" value="@item" @(ViewBag.SelectedFilters.Contains(item) ? "checked" : "")>
+                <div style="width: 7px;"></div>
+                <label class="custom-text"> @item</label>
+            </div>
+        }
+    </div>
+    <br />
+
+    <div class="container">
+        <button class="btn custom-button" type="submit">Caută</button>
+    </div>
+
 </form>
-
-
 
 
 
@@ -39,9 +112,9 @@
     {
         <div class="article-container">
             <article class="white-panel">
-                <h3 class="card-title text-success py-3 px-3 rounded-2">@hotel.Nume</h3>
-                <div><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
-                <div><i class="bi bi-geo-alt-fill"></i> @hotel.Locatie</div>
+                <h3 class="card-title text-header py-3 px-3 rounded-2">@hotel.Nume</h3>
+                <div class="custom-text"><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
+                <div class="custom-text"><i class="bi bi-geo-alt-fill"></i> @hotel.Locatie</div>
                 @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
                 {
                     <span class="starGlow"></span>
@@ -51,7 +124,7 @@
                     <span class="starFade"></span>
                 }
 
-                <h4>Available Rooms:</h4>
+                <h4 class="custom-text">Camere care îndeplinesc criteriile dumneavoastră:</h4>
                 @if (ViewBag.CamereHoteluri != null && ViewBag.CamereHoteluri.ContainsKey(hotel))
                 {
                     var availableRooms = ViewBag.CamereHoteluri[hotel];
@@ -60,21 +133,22 @@
                         foreach (MDS.Models.Camera camera in availableRooms)
                         {
                             <div>
-                                <div>Capacitate camera: @camera.Capacitate</div>
-                                <div>Pret Total: @(ViewBag.Nrzile * camera.PretNoapte)</div>
-                                <div>Descriere: @camera.Descriere</div>
-                                <button class="book-button" onclick="location.href='/Rezervari/New/@camera.Id'">Rezerva</button>
+                                <div class="custom-text">Capacitate camera: @camera.Capacitate</div>
+                                <div class="custom-text">Tarif total: @(ViewBag.Nrzile * camera.PretNoapte)</div>
+                                <p class="card-text mb-3 custom-text">Facilități: @Html.Raw(camera.Descriere)</p>
+                                <br/>
+                                <button class="custom-button" onclick="location.href='/Rezervari/New/@camera.Id'">Rezervă</button>
                             </div>
                         }
                     }
                     else
                     {
-                        <div>Nu sunt camere disponibile cu cerințele date</div>
+                        <div>Nu există camere disponibile cu cerințele date</div>
                     }
                 }
                 else
                 {
-                    <div>Nu sunt camere disponibile cu cerințele date</div>
+                    <div>Nu există camere disponibile cu cerințele date</div>
                 }
             </article>
         </div>

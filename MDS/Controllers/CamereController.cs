@@ -59,6 +59,7 @@ namespace MDS.Controllers
                                             .Where(art => art.Id == id)
                                             .First();
 
+            SetAccessRights();
 
             ViewBag.camera = camera;
             return View(camera);

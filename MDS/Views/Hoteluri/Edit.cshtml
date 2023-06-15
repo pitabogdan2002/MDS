@@ -14,7 +14,7 @@
             background-color: #3399ff;
             color: #ffffff;
             border: 2px solid #3399ff;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 16px;
         }
 
@@ -43,7 +43,11 @@
                 <br />
                 @Html.TextBox("Locatie", null, new { @class = "form-control" })
                 <br />
-                @Html.Label("Facilitati", "Facilități")
+
+                @Html.Label( "DAȚI ENTER DUPĂ FIECARE INSERARE DE IMAGINE/VIDEO"  )
+                <br />
+                <br />
+                @Html.Label("Facilitati", "Descriere")
                 <br />
                 @Html.TextArea("Facilitati", Model.Facilitati, new { @class = "form-control summernote" })
                 @Html.ValidationMessageFor(m => m.Facilitati, null, new { @class = "text-danger" })
@@ -55,8 +59,9 @@
                 "Selectați țara", new { @class = "form-control" })
                 <br />
 
-                <button class="btn btn-success custom-button" type="submit">Aplică modificările</button>
-
+                <div class="text-center">
+                    <button class="btn btn-success custom-button" type="submit">Aplică modificările</button>
+                </div>
             </form>
         </div>
     </div>

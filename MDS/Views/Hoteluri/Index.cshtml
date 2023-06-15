@@ -21,7 +21,7 @@
             background-color: #3399ff;
             color: #ffffff;
             border: 2px solid #3399ff;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 16px;
         }
 
@@ -51,10 +51,14 @@
     </style>
 </head>
 
+@*
 @if (ViewBag.Message != null)
 {
-    <h2 class="alert alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+    <h2 class="alert custom-text text-center mb-5">@ViewBag.Message</h2>
 }
+*@
+
+<h3 class="text-center mb-4 custom-header">~ Bucură-te de vacanțe de neuitat în Hoteluri Selecte ~</h3>
 
 <section id="pinBoot">
     @foreach (MDS.Models.Hotel hotel in ViewBag.Hoteluri)

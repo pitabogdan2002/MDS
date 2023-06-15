@@ -17,7 +17,7 @@
             background-color: #3399ff;
             color: #ffffff;
             border: 2px solid #3399ff;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 16px;
         }
 
@@ -38,18 +38,18 @@
         <div class="col-6 offset-3">
             <form method="post" action="/Reviews/Edit/@Model.Id">
 
-    @Html.Label("Continut", "Conținut")
+            @Html.Label("Continut", "Conținut")
 
-    <br />
+            <br />
 
-    @Html.Editor("Continut", new { @class = "form-control" })
-    <br />
+            @Html.TextBox("Continut", null, new { @class = "form-control" })
+            <br />
 
-    @Html.ValidationMessage("Continut", null, new { @class = "text-danger" })
-                <br />
-
-                <button class="btn  btn-primary custom-button" type="submit">Aplică modificările</button>
-
+            @Html.ValidationMessage("Continut", null, new { @class = "text-danger" })
+            <br />
+            <div class="text-center">
+                <button class="btn custom-button" type="submit">Aplică modificările</button>
+            </div>
             </form>
         </div>
     </div>
