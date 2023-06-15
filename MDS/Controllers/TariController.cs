@@ -35,20 +35,17 @@ namespace MDS.Controllers
 
         public IActionResult Index()
         {
-
- 
             var search = "";
-
             var tari = db.ListaTari.OrderBy(a => a.Nume).ToList();
 
-            if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+            if (!string.IsNullOrEmpty(HttpContext.Request.Query["search"]))
             {
-                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); 
+                search = HttpContext.Request.Query["search"].ToString().Trim();
                 List<int> tariid = db.ListaTari.Where(t => t.Nume.Contains(search))
                     .Select(a => a.Id).ToList();
                 tari = db.ListaTari.Where(t => tariid.Contains(t.Id)).ToList();
-
             }
+
             ViewBag.SearchString = search;
             int _perPage = 8;
             if (TempData.ContainsKey("message"))
@@ -56,15 +53,19 @@ namespace MDS.Controllers
                 ViewBag.message = TempData["message"].ToString();
             }
             int totalItems = tari.Count();
-            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
-            var offset = 0;
-            if (!currentPage.Equals(0))
+
+            // Get the current page number from the query parameter
+            int currentPage;
+            if (!int.TryParse(HttpContext.Request.Query["page"], out currentPage) || currentPage < 1)
             {
-                offset = (currentPage - 1) * _perPage;
+                currentPage = 1; // Set a default value if the page parameter is invalid or not present
             }
+
+            var offset = (currentPage - 1) * _perPage;
             var paginatedArticles = tari.Skip(offset).Take(_perPage);
             ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
             ViewBag.Tari = paginatedArticles;
+
             if (search != "")
             {
                 if (totalItems == 0)
@@ -80,9 +81,10 @@ namespace MDS.Controllers
                 ViewBag.PaginationBaseUrl = "/Tari/Index/?page";
             }
 
+            ViewBag.CurrentPage = currentPage; // Pass the current page number to the view
+
             return View();
         }
-
 
         [Authorize(Roles = "User,Agent,Admin")]
         public IActionResult Show(int id)
@@ -92,16 +94,31 @@ namespace MDS.Controllers
             if (User.IsInRole("User") || User.IsInRole("Agent") || User.IsInRole("Admin"))
             {
                 var tara = db.ListaTari.Where(t => t.Id == id).FirstOrDefault();
-      
-                tara.ListaHoteluri = db.ListaHoteluri.Where(h => h.TaraId == id).ToList();
+                int _perPage = 8;
 
-                if (tara.ListaHoteluri.Count == 0)
+                var listaHoteluri = db.ListaHoteluri.Where(h => h.TaraId == id).ToList();
+
+                if (listaHoteluri.Count == 0)
                 {
                     TempData["message"] = "Nu există hoteluri pentru țara selectată";
                     return RedirectToAction("Index", "Tari");
                 }
 
-                
+                int totalItems = listaHoteluri.Count();
+
+                int currentPage;
+                if (!int.TryParse(HttpContext.Request.Query["page"], out currentPage) || currentPage < 1)
+                {
+                    currentPage = 1; // Set a default value if the page parameter is invalid or not present
+                }
+
+                var offset = (currentPage - 1) * _perPage;
+                var paginatedHoteluri = listaHoteluri.Skip(offset).Take(_perPage);
+
+                ViewBag.LastPage = Math.Ceiling((float)totalItems / (float)_perPage);
+                ViewBag.Hotels = paginatedHoteluri;
+                ViewBag.CurrentPage = currentPage; // Pass the current page number to the view
+                ViewBag.PaginationBaseUrl = $"/Tari/Show/{id}?page=";
 
                 return View(tara);
             }
@@ -111,6 +128,7 @@ namespace MDS.Controllers
                 return RedirectToAction("Index", "Tari");
             }
         }
+
 
 
         [Authorize(Roles = "Admin")]
