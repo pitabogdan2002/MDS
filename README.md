@@ -1,4 +1,4 @@
-# Proiect MDS
+# BestBooking (Proiect MDS)
 
 Dănescu Adela-Gabriela, Dîrțu Ecaterina, Mihailescu Teodor, Pița Bogdan-Ioan 
 
@@ -16,6 +16,8 @@ grupa 242
 [Link Trello](https://trello.com/invite/mdsbestbooking/ATTI433e5f54374e851e879a648323e985b6BA271634)
 
 [Link Demo](https://youtu.be/TXNqJDGsOgc)
+
+[Link Diagrama] (https://drive.google.com/file/d/18PXyDElgSDRy9ncKxb538-3kkto0WEC3/view?usp=sharing)
 
 ### MUST: (3p) logarea userilor cu diferite roluri  :heavy_check_mark:
 - (1p) login standard 
@@ -65,3 +67,4 @@ cumparatori care vor sa renunte la rezervare, pe langa varianta de a anula (astf
   - (3p) pe pagina cu hoteluri dupa cautare daca se potrivesc cu campurile selectate
 
 ##### ~ 34/44p
+
