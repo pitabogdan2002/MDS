@@ -14,6 +14,7 @@ grupa 242
 ## User stories:
 
 [Link Trello](https://trello.com/invite/mdsbestbooking/ATTI433e5f54374e851e879a648323e985b6BA271634)
+[Link Demo](https://youtu.be/TXNqJDGsOgc)
 
 ### MUST: (3p) logarea userilor cu diferite roluri  :heavy_check_mark:
 - (1p) login standard 
