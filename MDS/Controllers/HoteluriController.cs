@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MDS.Controllers
 {
@@ -299,6 +302,7 @@ namespace MDS.Controllers
             var tari = db.ListaTari.ToList();
             ViewBag.Countries = tari;
             //ViewBag.Hoteluri = hoteluri;
+            var hotelurile = db.ListaHoteluri.Include(h => h.ListaCamere).ToList();
 
 
             var hotelsWithAvailableRooms = new List<Hotel>();
@@ -339,7 +343,8 @@ namespace MDS.Controllers
                         if (selectedFilters != null && selectedFilters.Any())
                         {
                             availableRooms = availableRooms.Where(room =>
-                                selectedFilters.All(filter => room.Descriere.Contains(filter))).ToList();
+                            selectedFilters.All(filter =>
+                            Regex.IsMatch(room.Descriere, $@"\b{Regex.Escape(filter)}\b"))).ToList();
                         }
 
                         if (availableRooms.Count > 0)
@@ -355,14 +360,24 @@ namespace MDS.Controllers
 
                 else
                 {
-                    TempData["message"] = "Toate câmpurile sunt obligatorii";
-                    ViewBag.Message = TempData["message"].ToString();
+
+                    TempData["Message"] = "Toate câmpurile sunt obligatorii";
+                    ViewBag.Message = TempData["Message"].ToString();
                     //return RedirectToAction("CautareHoteluri");
+                    
+
+
+
+                    ViewBag.CamereHoteluri = hoteluri.ToDictionary(hotel => hotel, hotel => hotel.ListaCamere.ToList());
 
 
                 }
+                
 
             }
+
+
+       
 
 
             ViewBag.CheckinDate = DateTime.Now.ToString("yyyy-MM-dd");

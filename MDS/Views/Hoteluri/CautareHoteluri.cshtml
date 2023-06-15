@@ -38,6 +38,12 @@
             width: 200px !important;
         }
 
+        .article-container {
+            display: inline-block; 
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
             .custom-textbox::placeholder {
                 color: #1a8cff;
             }
@@ -62,12 +68,14 @@
     </style>
 </head>
 
+
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
     <div class="alert alert-info custom-text">
         @ViewBag.Message
     </div>
 }
+
 <h2 class="text-center mt-5 custom-header"> Caută hotelul perfect pentru tine!</h2>
 <br />
 <form method="GET">
@@ -106,15 +114,14 @@
 </form>
 
 
-
 <section id="pinBoot">
-    @foreach (MDS.Models.Hotel hotel in ViewBag.Hoteluri)
+    @foreach (var hotel in ViewBag.Hoteluri)
     {
-        <div class="article-container">
-            <article class="white-panel">
-                <h3 class="card-title text-header py-3 px-3 rounded-2">@hotel.Nume</h3>
-                <div class="custom-text"><i class="bi bi-globe"></i> @hotel.Tara.Nume</div>
-                <div class="custom-text"><i class="bi bi-geo-alt-fill"></i> @hotel.Locatie</div>
+        <article class="white-panel" >
+            <h4 class="text-center custom-header">@Html.Raw(hotel.Nume)</h4>
+            <br>
+            <p class="custom-text"><i class="bi-geo-alt-fill"></i>@Html.Raw(hotel.Locatie)</p>
+            <div>
                 @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
                 {
                     <span class="starGlow"></span>
@@ -123,8 +130,8 @@
                 {
                     <span class="starFade"></span>
                 }
-
-                <h4 class="custom-text">Camere care îndeplinesc criteriile dumneavoastră:</h4>
+            </div>
+            <div>
                 @if (ViewBag.CamereHoteluri != null && ViewBag.CamereHoteluri.ContainsKey(hotel))
                 {
                     var availableRooms = ViewBag.CamereHoteluri[hotel];
@@ -133,32 +140,34 @@
                         foreach (MDS.Models.Camera camera in availableRooms)
                         {
                             <div>
-                                <div class="custom-text">Capacitate camera: @camera.Capacitate</div>
+                                <div class="custom-text">Capacitate cameră: @camera.Capacitate</div>
                                 <div class="custom-text">Tarif total: @(ViewBag.Nrzile * camera.PretNoapte)</div>
                                 <p class="card-text mb-3 custom-text">Facilități: @Html.Raw(camera.Descriere)</p>
-                                <br/>
+                                <br />
                                 <button class="custom-button" onclick="location.href='/Rezervari/New/@camera.Id'">Rezervă</button>
                             </div>
                         }
                     }
                     else
                     {
-                        <div>Nu există camere disponibile cu cerințele date</div>
+                        <div>Nu există camere disponibile pentru acest hotel</div>
                     }
                 }
-                else
-                {
-                    <div>Nu există camere disponibile cu cerințele date</div>
-                }
-            </article>
-        </div>
+
+            </div>
+        </article>
     }
 </section>
 
 
 
+
+<footer>
+    <!-- Footer content -->
+</footer>
+
 <script>
-    $(function() {
+    $(function () {
         // Initialize the datepickers
         $('#checkinDate, #checkoutDate').datepicker({
             dateFormat: 'yyyy-mm-dd',
