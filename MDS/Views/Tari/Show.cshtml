@@ -17,7 +17,7 @@
             background-color: #3399ff;
             color: #ffffff;
             border: 2px solid #3399ff;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 16px;
         }
 
@@ -77,11 +77,11 @@
     </style>
 </head>
 
-<h2 class="text-center mb-4 custom-header">Alege hotelul dorit!</h2>
+<h3 class="text-center mb-4 custom-header">~ Bucură-te de vacanțe de neuitat în Hoteluri Selecte ~</h3>
 
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert custom-text alert-dismissible fade show" role="alert">
         <strong>@ViewBag.Message</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -94,7 +94,7 @@
             <h4 class="text-center custom-header">@Html.Raw(hotel.Nume)</h4>
             <br>
             <p class="custom-text">@Html.Raw(hotel.Facilitati)</p>
-            <p class="custom-text">@Html.Raw(hotel.Locatie)</p>
+            <p class="custom-text"><i class="bi-geo-alt-fill"></i>@Html.Raw(hotel.Locatie)</p>
             <div>
                 @for (var i = 1; i <= int.Parse(@Html.Raw(hotel.Rating).ToString()); i++)
                 {
