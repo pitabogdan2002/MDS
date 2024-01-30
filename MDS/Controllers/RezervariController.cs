@@ -304,10 +304,15 @@ namespace MDS.Controllers
         {
             var reservation = db.ListaRezervari.Find(id);
             var camera = db.ListaCamere.SingleOrDefault(c => c.Id == reservation.CameraId);
-
+            ViewBag.Future = false;
             ViewBag.Reservation = reservation;
             ViewBag.Camera = camera;
             SetAccessRights();
+            if(reservation.CheckIn > DateTime.Today)
+            {
+                ViewBag.Future = true;
+            }
+            
             return View();
         }
 

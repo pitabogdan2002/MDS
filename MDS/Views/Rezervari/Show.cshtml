@@ -112,7 +112,7 @@
                 </div>
             </div>
             
-            @if (reservation.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+            @if ((reservation.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin )  && ViewBag.Future)
             {
                 <div class="d-flex justify-content-between">
                     <div>
