@@ -96,7 +96,21 @@ namespace MDS.Controllers
 
             SetAccessRights();
 
+            string currentUserId = _userManager.GetUserId(User); // Assuming you have a method like this
+
+            // Check if the current user has reservations for this hotel with a checkout date earlier than today
+            bool userHasReservations = db.ListaRezervari.Any(r => r.UserId == currentUserId
+                                                    && db.ListaCamere.Any(c => c.HotelId == id && c.Id == r.CameraId)
+                                                    && r.CheckOut < DateTime.Today);
+
+            // Store the result in ViewBag
+            ViewBag.UserHasReservations = userHasReservations;
+
             return View(hotel);
+
+
+           
+
         }
         [HttpPost]
         [Authorize(Roles = "User,Agent,Admin")]
