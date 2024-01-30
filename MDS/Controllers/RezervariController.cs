@@ -93,7 +93,6 @@ namespace MDS.Controllers
             var futureReservations = rezervari.Where(a => a.CheckOut >= currentDate).ToList();
 
             ViewBag.UserName = user.UserName;
-
             int totalItems = rezervari.Count();
             var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
 
