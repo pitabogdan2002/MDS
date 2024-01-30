@@ -60,15 +60,16 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.CheckIn, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.CheckIn, new { htmlAttributes = new { @class = "form-control", Value = currentDate.ToString("yyyy-MM-dd") } })
+        @Html.TextBoxFor(model => model.CheckIn, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", value = currentDate.ToString("yyyy-MM-dd") })
         @Html.ValidationMessageFor(model => model.CheckIn, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
         @Html.LabelFor(model => model.CheckOut, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.CheckOut, new { htmlAttributes = new { @class = "form-control", Value = currentDate.ToString("yyyy-MM-dd") } })
+        @Html.TextBoxFor(model => model.CheckOut, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", value = currentDate.ToString("yyyy-MM-dd") })
         @Html.ValidationMessageFor(model => model.CheckOut, "", new { @class = "text-danger" })
     </div>
+
 
     <div class="form-group">
         @Html.LabelFor(model => model.ListaClienti, htmlAttributes: new { @class = "control-label" })
