@@ -57,14 +57,16 @@
 <h2 class="text-center mb-4 custom-header">Toate Rezervările</h2>
 @if (ViewBag.Message != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-dismissible custom-text fade show" role="alert">
         <strong>@ViewBag.Message</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
+<h3 class="text-center mb-4 custom-header">Rezervări viitoare</h3>
+
 <section id="reservations" class="row row-cols-1 row-cols-md-2 g-4">
-    @foreach (var reservation in ViewBag.Rezervari)
+    @foreach (var reservation in ViewBag.FutureReservations)
     {
         <article class="col">
             <div class="card h-100">
@@ -72,9 +74,40 @@
                     <h5 class="card-title custom-header">@Html.Raw(reservation.ListaClienti)</h5>
                     <p class="card-text custom-text"><strong>Check-in:</strong> @Html.Raw(reservation.CheckIn)</p>
                     <p class="card-text custom-text"><strong>Check-out:</strong> @Html.Raw(reservation.CheckOut)</p>
+                    <p class="card-text custom-text"><strong>Suma:</strong> @Html.Raw(reservation.Suma) $</p>
                     <p class="card-text custom-text"><strong>Client Id:</strong> @Html.Raw(reservation.UserId)</p>
                     <p class="card-text custom-text"><strong>User Name:</strong>  @ViewBag.UserName</p>
+                    
 
+
+                </div>
+                <div class="card-footer text-center">
+                    <a href="/Rezervari/Show/@reservation.Id" class="btn custom-button">Detalii</a>
+                    &nbsp;
+                    <a asp-action="CancelReservation" asp-route-id="@reservation.Id" class="btn custom-button btn-danger">Anulează rezervarea</a>
+                </div>
+            </div>
+        </article>
+    }
+</section>
+
+<br/>
+
+<h3 class="text-center mb-4 custom-header">Rezervări trecute</h3>
+
+
+<section id="reservations" class="row row-cols-1 row-cols-md-2 g-4">
+    @foreach (var reservation in ViewBag.PastReservations)
+    {
+        <article class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title custom-header">@Html.Raw(reservation.ListaClienti)</h5>
+                    <p class="card-text custom-text"><strong>Check-in:</strong> @Html.Raw(reservation.CheckIn)</p>
+                    <p class="card-text custom-text"><strong>Check-out:</strong> @Html.Raw(reservation.CheckOut)</p>
+                    <p class="card-text custom-text"><strong>Suma:</strong> @Html.Raw(reservation.Suma) $</p>
+                    <p class="card-text custom-text"><strong>Client Id:</strong> @Html.Raw(reservation.UserId)</p>
+                    <p class="card-text custom-text"><strong>User Name:</strong>  @ViewBag.UserName</p>
 
 
                 </div>
@@ -85,6 +118,8 @@
         </article>
     }
 </section>
+
+
 
 <div class="mt-4 d-flex justify-content-center">
     <nav aria-label="Page navigation">

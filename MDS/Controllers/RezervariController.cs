@@ -1,4 +1,5 @@
-﻿using Ganss.Xss;
+﻿using AngleSharp.Dom;
+using Ganss.Xss;
 using MDS.Data;
 using MDS.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -72,19 +73,33 @@ namespace MDS.Controllers
         }
 
         public IActionResult RezervarileMele()
-        {   
-            var rezervari = db.ListaRezervari.OrderByDescending(a => a.CheckIn).ThenByDescending(a => a.CheckOut)
-                                          .Include("User").Where(a =>a.UserId== _userManager.GetUserId(User));
+        {
+            var currentDate = DateTime.Now;
+            var userId = _userManager.GetUserId(User);
+
+            // Obține rezervările pentru utilizatorul curent și care au Disponibila setată la false
+            var rezervari = db.ListaRezervari
+                .Where(a => a.UserId == userId && a.Anulata == 0)  // Filtrare pentru rezervările cu Disponibila = false
+                .OrderByDescending(a => a.CheckIn)
+                .ThenByDescending(a => a.CheckOut)
+                .Include("User")
+                .ToList();
+
             var userName = _userManager.GetUserName(User);
             var user = db.Users.FirstOrDefault(u => u.UserName == userName);
-            ViewBag.UserName = user.UserName;
 
+            // Separă rezervările în cele trecute și cele viitoare
+            var pastReservations = rezervari.Where(a => a.CheckOut < currentDate).ToList();
+            var futureReservations = rezervari.Where(a => a.CheckOut >= currentDate).ToList();
+
+            ViewBag.UserName = user.UserName;
 
             int totalItems = rezervari.Count();
             var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
 
             var offset = 0;
             int _perPage = 8;
+
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.message = TempData["message"].ToString();
@@ -95,14 +110,17 @@ namespace MDS.Controllers
                 offset = (currentPage - 1) * _perPage;
             }
 
-            var paginatedrezervari = rezervari.Skip(offset).Take(_perPage);
+            // Paginare pentru rezervările trecute
+            var paginatedPastReservations = pastReservations.Skip(offset).Take(_perPage);
             ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
-            ViewBag.Rezervari = paginatedrezervari;
+
+            ViewBag.PastReservations = paginatedPastReservations;
+            ViewBag.FutureReservations = futureReservations;
 
             if (totalItems == 0)
             {
-                TempData["message"] = "Nu s-a gasit nicio rezervare";
-                return RedirectToAction("Index");
+                TempData["message"] = "Nu s-a găsit nicio rezervare";
+                return RedirectToAction("Index", "Tari");
             }
             else
             {
@@ -111,6 +129,93 @@ namespace MDS.Controllers
 
             return View();
         }
+
+
+        public IActionResult CancelReservation(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var reservationToDelete = db.ListaRezervari.Find(id);
+
+            if (reservationToDelete != null)
+            {
+
+
+                // Setează Disponibila la true
+                reservationToDelete.Anulata = 1;
+
+                // Round the number sumDecimal / 10
+                decimal rotunjire = Math.Round((decimal)reservationToDelete.Suma / 10);
+
+                // Subtract the rounded value from sumDecimal
+
+                if ((decimal)reservationToDelete.Suma - rotunjire > 0)
+                {
+                    reservationToDelete.Suma = (float)((decimal)reservationToDelete.Suma - rotunjire);
+
+                    // Salvează modificările în baza de date
+                    db.SaveChanges();
+
+                    TempData["message"] = $"Rezervarea a fost anulată cu succes la prețul de {rotunjire} $";
+                }
+                else
+                {
+                    TempData["message"] = "Nu s-a putut anula rezervarea din cauza prețului prea mic.";
+                }
+            }
+            else
+            {
+                TempData["message"] = "Nu s-a putut anula rezervarea.";
+            }
+
+            // Redirecționează către pagina originală sau unde dorești să mergi după anularea rezervării
+            return RedirectToAction("RezervarileMele");
+        }
+
+
+
+        public IActionResult RezervariAnulate()
+        {
+            // Obține rezervările anulate din baza de date care au Disponibila setată la true
+            var reservationsToDisplay = db.ListaRezervari
+                .Where(r => r.Anulata == 1)
+                .ToList();
+
+
+            // Update ViewBag cu lista de rezervări anulate de afișat
+            ViewBag.CanceledReservations = reservationsToDisplay;
+
+            // Redirect to the original page or wherever you want to go after processing canceled reservations.
+            return View();
+        }
+
+        public IActionResult PreiaRezervarea(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            // Find the reservation in the database
+            var rezervareToPreia = db.ListaRezervari.Find(id);
+
+            if (rezervareToPreia != null)
+            {
+                // Update the details with current user data
+                rezervareToPreia.UserId = userId; // Set the UserId to the current user
+                rezervareToPreia.Anulata = 0;     // Set Anulata to 0
+
+                // Save the changes to the database
+                db.SaveChanges();
+
+                TempData["message"] = "Rezervarea a fost preluată cu succes.";
+            }
+            else
+            {
+                TempData["message"] = "Nu s-a putut prelua rezervarea.";
+            }
+
+            // Redirect to the original page or wherever you want to go after updating the reservation.
+            return RedirectToAction("RezervarileMele");
+        }
+
 
 
         [Authorize(Roles = "User")]
@@ -136,7 +241,7 @@ namespace MDS.Controllers
         public ActionResult New(Rezervare rez)
         {
             var sanitizer = new HtmlSanitizer();
-          
+
             rez.UserId = _userManager.GetUserId(User);
 
             var camera = db.ListaCamere.Include("Hotel")
@@ -250,7 +355,7 @@ namespace MDS.Controllers
 
                 TimeSpan zile = reservationToEdit.CheckOut - reservationToEdit.CheckIn;
                 int nrzile = (int)zile.TotalDays;
-                
+
                 reservationToEdit.Suma = (nrzile+1) * camera.PretNoapte;
 
                 // Se salveaza modificarile in baza de date
@@ -295,7 +400,7 @@ namespace MDS.Controllers
             ViewBag.UserCurent = _userManager.GetUserId(User);
         }
 
-    
+
 
 
     }

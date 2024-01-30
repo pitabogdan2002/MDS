@@ -20,6 +20,8 @@ namespace MDS.Models
 
         public float Suma { get; set; }
 
+        public int Anulata { get; set; } = 0;
+
         public virtual ApplicationUser? User { get; set; }
 
         public String ? UserId { get; set; }

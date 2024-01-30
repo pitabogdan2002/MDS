@@ -80,8 +80,8 @@
 <br />
 <form method="GET">
     <div class="input-group mb-3">
-        <input type="text" class="form-control custom-textbox" placeholder="Check-in (yyyy-mm-dd)" id="checkinDate" name="checkinDate">
-        <input type="text" class="form-control custom-textbox" placeholder="Check-out (yyyy-mm-dd)" id="checkoutDate" name="checkoutDate">
+        <input type="date" class="form-control custom-textbox" placeholder="check-in" id="checkinDate" name="checkinDate">
+        <input type="date" class="form-control custom-textbox" placeholder="check-out" id="checkoutDate" name="checkoutDate">
         <select class="form-select custom-textbox" aria-label="Țara" name="country">
             <option value="" class="custom-textbox">Selectează țara</option>
             @foreach (var country in ViewBag.Countries)
