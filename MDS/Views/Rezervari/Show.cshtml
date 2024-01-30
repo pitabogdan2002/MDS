@@ -118,13 +118,17 @@
                     <div>
                         <a class="btn custom-button" href="/Rezervari/Edit/@reservation.Id"><i class="bi bi-pencil-square"></i>Editează</a>
                     </div>
-                    <div>
-                        <form method="post" action="/Rezervari/Delete/@reservation.Id">
-                            <button class="btn custom-button" type="submit"><i class="bi bi-trash"></i>Șterge</button>
-                        </form>
-                    </div>
+                   
                 </div>
             }
+            @if (ViewBag.EsteAdmin)
+            {<div>
+            <form method="post" action="/Rezervari/Delete/@reservation.Id">
+                <button class="btn custom-button" type="submit"><i class="bi bi-trash"></i>Șterge</button>
+            </form>
+            </div>
+            }
+        
         </div>
     </div>
 
