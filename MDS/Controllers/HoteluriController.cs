@@ -309,25 +309,23 @@ namespace MDS.Controllers
             ViewBag.FilterOptions = filterOptions;
             ViewBag.SelectedFilters = selectedFilters;
 
-            //ViewBag.Hoteluri = null;
             var hoteluri = from hot in db.ListaHoteluri
                            orderby hot.Rating
                            select hot;
+
             var tari = db.ListaTari.ToList();
             ViewBag.Countries = tari;
-            //ViewBag.Hoteluri = hoteluri;
-            var hotelurile = db.ListaHoteluri.Include(h => h.ListaCamere).ToList();
-
 
             var hotelsWithAvailableRooms = new List<Hotel>();
-            if (Convert.ToString(HttpContext.Request.Query["checkinDate"]) != null && Convert.ToString(HttpContext.Request.Query["checkoutDate"]) != null)
+            if (!string.IsNullOrEmpty(HttpContext.Request.Query["checkinDate"]) && !string.IsNullOrEmpty(HttpContext.Request.Query["checkoutDate"]))
             {
-                if (HttpContext.Request.Query["checkinDate"] != "" && HttpContext.Request.Query["checkoutDate"] != "" && HttpContext.Request.Query["numPersons"] != "" && HttpContext.Request.Query["country"] != "")
+                if (!string.IsNullOrEmpty(HttpContext.Request.Query["checkinDate"]) &&
+                    !string.IsNullOrEmpty(HttpContext.Request.Query["checkoutDate"]) &&
+                    !string.IsNullOrEmpty(HttpContext.Request.Query["numPersons"]) &&
+                    !string.IsNullOrEmpty(HttpContext.Request.Query["country"]))
                 {
-
                     DateTime checkinDate = DateTime.Parse(HttpContext.Request.Query["checkinDate"]);
                     DateTime checkoutDate = DateTime.Parse(HttpContext.Request.Query["checkoutDate"]);
-
 
                     TimeSpan zile = checkoutDate - checkinDate;
                     int nrzile = (int)zile.TotalDays;
@@ -343,22 +341,58 @@ namespace MDS.Controllers
                     var hotels = db.ListaHoteluri.Include(h => h.ListaCamere).Where(h => h.Tara.Nume == country).ToList();
                     availableRoomsByHotel = new Dictionary<Hotel, List<Camera>>();
 
+                    int minPrice, maxPrice;
+                    if (!string.IsNullOrEmpty(HttpContext.Request.Query["minPrice"]))
+                    {
+                        minPrice = int.Parse(HttpContext.Request.Query["minPrice"]);
+                    }
+                    else
+                    {
+                        minPrice = 0;
+                    }
+                    if (!string.IsNullOrEmpty(HttpContext.Request.Query["maxPrice"]))
+                    {
+                        maxPrice = int.Parse(HttpContext.Request.Query["maxPrice"]);
+                    }
+                    else
+                    {
+                        maxPrice = int.MaxValue;
+                    }
+
                     foreach (var hotel in hotels)
                     {
                         var availableRooms = hotel.ListaCamere
-                        .Where(room =>
-                             room.Capacitate >= numPersons &&
-                        !db.ListaRezervari.Any(reservation =>
-                        reservation.CameraId == room.Id &&
-                         reservation.CheckIn <= checkinDate &&
-                        reservation.CheckOut >= checkoutDate
-                    )).ToList();
+                            .Where(room =>
+                                room.Capacitate >= numPersons &&
+                                !db.ListaRezervari.Any(reservation =>
+                                    reservation.CameraId == room.Id &&
+                                    reservation.CheckIn <= checkinDate &&
+                                    reservation.CheckOut >= checkoutDate
+                                )).ToList();
+
+                        availableRooms = availableRooms.Where(room =>
+                            room.PretNoapte * nrzile >= minPrice &&
+                            room.PretNoapte * nrzile <= maxPrice
+                        ).ToList();
 
                         if (selectedFilters != null && selectedFilters.Any())
                         {
                             availableRooms = availableRooms.Where(room =>
-                            selectedFilters.All(filter =>
-                            Regex.IsMatch(room.Descriere, $@"\b{Regex.Escape(filter)}\b"))).ToList();
+                                selectedFilters.All(filter =>
+                                    Regex.IsMatch(room.Descriere, $@"\b{Regex.Escape(filter)}\b")
+                                )
+                            ).ToList();
+                        }
+
+                        // Sorting based on price
+                        string sortOrder = HttpContext.Request.Query["sortOrder"];
+                        if (sortOrder == "priceAsc")
+                        {
+                            availableRooms = availableRooms.OrderBy(room => room.PretNoapte).ToList();
+                        }
+                        else if (sortOrder == "priceDesc")
+                        {
+                            availableRooms = availableRooms.OrderByDescending(room => room.PretNoapte).ToList();
                         }
 
                         if (availableRooms.Count > 0)
@@ -368,40 +402,37 @@ namespace MDS.Controllers
                         availableRoomsByHotel.Add(hotel, availableRooms);
                     }
 
+
+
                     ViewBag.CamereHoteluri = availableRoomsByHotel;
-
                 }
-
                 else
                 {
-
                     TempData["Message"] = "Toate câmpurile sunt obligatorii";
                     ViewBag.Message = TempData["Message"].ToString();
                     //return RedirectToAction("CautareHoteluri");
-                    
-
-
-
                     ViewBag.CamereHoteluri = hoteluri.ToDictionary(hotel => hotel, hotel => hotel.ListaCamere.ToList());
-
-
                 }
-                
-
             }
-
-
-       
+            string sortOrderHotels = HttpContext.Request.Query["sortOrderHotels"];
+            if (sortOrderHotels == "asc")
+            {
+                hotelsWithAvailableRooms = hotelsWithAvailableRooms.OrderBy(hotel => hotel.Rating).ToList();
+            }
+            else if (sortOrderHotels == "desc")
+            {
+                hotelsWithAvailableRooms = hotelsWithAvailableRooms.OrderByDescending(hotel => hotel.Rating).ToList();
+            }
 
 
             ViewBag.CheckinDate = DateTime.Now.ToString("yyyy-MM-dd");
             ViewBag.CheckoutDate = DateTime.Now.ToString("yyyy-MM-dd");
-            ;
             ViewBag.NumPersons = "";
             ViewBag.Hoteluri = hotelsWithAvailableRooms;
 
             return View();
         }
+
 
 
 

@@ -90,7 +90,18 @@
             }
         </select>
         <input type="number" class="form-control custom-textbox" placeholder="Număr de persoane" name="numPersons" value="@ViewBag.NumPersons">
-        
+        <input type="number" class="form-control custom-textbox" placeholder="Preț minim" name="minPrice" value="@ViewBag.MinPrice">
+        <input type="number" class="form-control custom-textbox" placeholder="Preț maxim" name="maxPrice" value="@ViewBag.MaxPrice">
+        <select class="form-select custom-textbox" aria-label="Sortare camera" name="sortOrder">
+            <option value="" class="custom-textbox">Sortează după:</option>
+            <option value="priceAsc" class="custom-textbox">Preț crescător</option>
+            <option value="priceDesc" class="custom-textbox">Preț descrescător</option>
+        </select>
+        <select class="form-select custom-textbox" aria-label="Sortare hoteluri" name="sortOrderHotels">
+            <option value="asc" class="custom-textbox">Evaluare crescătoare</option>
+            <option value="desc" class="custom-textbox">Evaluare descrescătoare</option>
+        </select>
+    
     </div>
     <br />
     <label class="custom-header">Facilități dorite:</label>
